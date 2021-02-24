@@ -54,6 +54,7 @@ It was originally based of [AK163631's Answer Tool](https://github.com/AK163631/
     - make sure that there is nothing else like `qnum=5` in it.
 
 ### Tips
+* IMPORTANT: Please read [this](https://github.com/Jacrac04/DFM-Bot/issues/1) before using
 * If you use a 'keep going till i say' question url the only way to stop the bot is by closing the window or terminating the process
 
 
