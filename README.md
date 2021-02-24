@@ -77,6 +77,6 @@ Contributions are what make the open source community such an amazing place to b
 - [ ] Finish Testing
   - [x] Test login
   - [ ] Test all answer functions thoroughly
-- [ ] ADd images `READ.ME`
+- [ ] Add images `READ.ME`
 
 ## Contact Me 
