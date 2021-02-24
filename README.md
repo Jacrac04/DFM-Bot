@@ -56,10 +56,11 @@ It was originally based of [AK163631's Answer Tool](https://github.com/AK163631/
 ### Tips
 * IMPORTANT: Please read [this](https://github.com/Jacrac04/DFM-Bot/issues/1) before using
 * If you use a 'keep going till i say' question url the only way to stop the bot is by closing the window or terminating the process
+* After about 15 on one 'skill' you will reach 'master' level. You can keep answering questions on that skill but you will not gain points. So if you want to get lots of points go to on Dr frost practice --> key skills then select lots of skills which you haven't done before then practise them. 
 
 
 ## Bugs, Issues And Requests
-Please report any issue or bugs [here](https://github.com/Jacrac04/DFM-Bot/issues)
+Please report any issue or bugs [here](https://github.com/Jacrac04/DFM-Bot/issues/new/choose)
 See the [open issues](https://github.com/Jacrac04/DFM-Bot/issues) for a list of proposed features (and known issues).
 
 ## Contributing
@@ -74,10 +75,12 @@ Contributions are what make the open source community such an amazing place to b
 ## Todo
 
 - [x] Add Executable
-- [ ] Add More Answer Functions
 - [ ] Finish Testing
   - [x] Test login
   - [ ] Test all answer functions thoroughly
-- [ ] Add images `READ.ME`
+- [ ] Add More Answer Functions
+- [ ] Auto skill selectors (maybe)
+- [ ] Add images to `README.md`
 
 ## Contact Me 
+To contact me you can make an [issue](https://github.com/Jacrac04/DFM-Bot/issues/new/choose) using the Help Wanted or Question template.
