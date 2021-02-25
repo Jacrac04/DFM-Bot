@@ -48,7 +48,7 @@ It was originally based of [AK163631's Answer Tool](https://github.com/AK163631/
 ### Setup
 1. Download the latest version from [Releases](https://github.com/Jacrac04/DFM-Bot/releases)
 2. Run the .exe
-3. Enter your login details - Ensure that your [Dr frost account](https://www.drfrostmaths.com/account.php) is not linked to google or another service.
+3. Enter your login details - Ensure that your [Dr frost account](https://www.drfrostmaths.com/account.php) is not linked to google or another service. [(Check here)](https://www.drfrostmaths.com/account.php)
 4. Enter a question url.
     - This should look like `https://www.drfrostmaths.com/do-question.php?aaid=12345678`
     - make sure that there is nothing else like `qnum=5` in it.
