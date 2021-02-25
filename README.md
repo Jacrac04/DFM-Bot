@@ -9,6 +9,8 @@
   <p align="center">
     A Bot for drfrostmaths.com
     <br />
+    <a href="https://repl.it/@Jacrac04/DFM-Bot#main.py">Try Online</a>
+    ·
     <a href="https://github.com/Jacrac04/DFM-Bot/issues">Report Bug</a>
     ·
     <a href="https://github.com/Jacrac04/DFM-Bot/issues">Request Feature</a>
@@ -25,7 +27,8 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#setup">Setup</a></li>
+        <li><a href="#setup-and-use-for-repl">Setup</a></li>
+        <li><a href="#setup-and-use-for-windows">Setup</a></li>
         <li><a href="#tips">Tips</a></li>
       </ul>
     </li>
@@ -45,13 +48,22 @@ This is a Bot for [drfrostmaths.com](drfrostmaths.com).
 It was originally based of [AK163631's Answer Tool](https://github.com/AK163631/DFM-Answer-Tool)
 
 ## Getting Started
-### Setup
+### Setup And Use For Windows
 1. Download the latest version from [Releases](https://github.com/Jacrac04/DFM-Bot/releases)
 2. Run the .exe
 3. Enter your login details - Ensure that your [Dr frost account](https://www.drfrostmaths.com/account.php) is not linked to google or another service. [(Check here)](https://www.drfrostmaths.com/account.php)
 4. Enter a question url.
     - This should look like `https://www.drfrostmaths.com/do-question.php?aaid=12345678`
     - make sure that there is nothing else like `qnum=5` in it.
+
+### Setup And Use For Repl
+1. Go to the [repl.it site](https://repl.it/@Jacrac04/DFM-Bot#main.py) for this project and click run.
+2. Enter your login details - Ensure that your [Dr frost account](https://www.drfrostmaths.com/account.php) is not linked to google or another service. [(Check here)](https://www.drfrostmaths.com/account.php)
+3. Enter a question url.
+    - This should look like `https://www.drfrostmaths.com/do-question.php?aaid=12345678`
+    - make sure that there is nothing else like `qnum=5` in it.
+The repl site works however it is slower and you will have a better user expeciernce is you run it using the exe or source code on your own machine.
+
 
 ### Tips
 * IMPORTANT: Please read [this](https://github.com/Jacrac04/DFM-Bot/issues/1) before using
