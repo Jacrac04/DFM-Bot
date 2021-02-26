@@ -86,10 +86,11 @@ class AnswerHandler:
 
             if ansMethordType == 1:
                 answer = self.find_answer_qid(data, type_)
-                data['aaid'] = aaid
             elif ansMethordType == 2:
                 answer = self.find_answer_params(data, type_)
-                data['aaid'] = aaid
+
+            data['aaid'] = aaid
+            
             try:
                 result = self.answer_functions[type_](data, answer)  # select appropriate function to process answer
             except KeyError:
