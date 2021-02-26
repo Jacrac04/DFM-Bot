@@ -34,8 +34,8 @@ class UserInterface(Tk):
 
         self.of = OutputFrame(self, container)
         self.of.grid(column=0, row=3, padx=10, pady=10)
-        sys.stdout = self.of
-        sys.stdout.write = self.of.write
+#         sys.stdout = self.of
+#         sys.stdout.write = self.of.write
 
         self.disable(self.mf.winfo_children())
 
