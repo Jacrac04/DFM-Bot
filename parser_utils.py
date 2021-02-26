@@ -36,7 +36,7 @@ class Parser:
                 return ansMethordType, {'qid': qid, 'qnum': qnum}, type_
             except:
                 params = str(_json['params'])
-                params = params.replace('\'', '"').replace('None', 'null')
+                params = params.replace('\'', '"').replace('None', 'null').replace('True', 'true').replace('False', 'false')
                 permid = _json['permid']
                 type_ = _json['answer']['type']
                 qnum = FIND_DIGIT_REGEX.findall(QNUM_REGEX.findall(current_question_script)[0])[0]  
