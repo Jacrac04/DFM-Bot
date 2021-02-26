@@ -34,6 +34,8 @@ class UserInterface(Tk):
 
         self.disable(self.mf.winfo_children())
 
+        self.interface = Interface()
+
     def enable(self, childList):
         for child in childList:
             child.configure(state='normal')
@@ -47,7 +49,7 @@ class LoginFrame(LabelFrame):
     def __init__(self, master, cont):
         super().__init__(master)
 
-
+        self.master = master
 
         self.label_username = Label(self, text="Email")
         self.label_password = Label(self, text="Password")
@@ -70,7 +72,7 @@ class LoginFrame(LabelFrame):
         if '@' not in email:
             email += '@utcportsmouth.org'
         try:
-            Interface(email, password)
+            self.master.master.interface.test_login(email, password)
             self.master.master.enable(self.master.master.mf.winfo_children())
         except Exception as e:
             print(e, file=sys.stderr)
@@ -78,7 +80,7 @@ class LoginFrame(LabelFrame):
 
 
 class MainFrame(LabelFrame):
-    def __init__(self, master, controller=None):
+    def __init__(self, master, controller):
         super().__init__(master)
 
         self.label_url = Label(self, text="URL")
@@ -96,6 +98,20 @@ class MainFrame(LabelFrame):
         self.start_btn.grid(columnspan=2, pady=(1, 10), padx=(10, 10))
 
     def _start_btn_clicked(self):
+        url = self.entry_url.get()
+        totalQnum = self.entry_totalQnum.get()
+        try:
+            self.master.master.interface.main_loop(url)
+        except Exception as e:
+            print(e, file=sys.stderr)
+            tkm.showerror("Login error", "Incorrect Email or Password")
+
+
+
+
+class OutputFrame(LabelFrame):
+    def __init__(self, master, controller):
+        super().__init__(master)
         pass
 
 
@@ -115,17 +131,26 @@ class Login():
 
 
 class Interface:
-    def __init__(self, email, password):
+    def __init__(self):
         self.session = Session()
-        self.test_login(email, password)
+        #self.test_login(email, password)
         # self.handler = AnswerHandler(self.session)  
         
         # self.main_loop()
 
-    def main_loop(self):
-        print('Press ctrl-c to quit')
-        while True:
-            url = input('\nType Question url: ')
+    def main_loop(self, url=None):
+        if url==None:
+            print('Press ctrl-c to quit')
+            while True:
+                url = input('\nType Question url: ')
+                handler = AnswerHandler(self.session)
+                res, err = handler.answer_questions_V3(url)
+                if res:
+                    print('No more questions for this URL')
+                else:
+                    print(f'Unexpected exception occurred: {err}', file=sys.stderr)
+                    traceback.print_exc()
+        else:
             handler = AnswerHandler(self.session)
             res, err = handler.answer_questions_V3(url)
             if res:
@@ -133,6 +158,7 @@ class Interface:
             else:
                 print(f'Unexpected exception occurred: {err}', file=sys.stderr)
                 traceback.print_exc()
+
 
     def test_login(self, email, password):
         login_url = 'https://www.drfrostmaths.com/process-login.php?url='
