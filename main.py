@@ -152,8 +152,8 @@ class Login():
 class Interface:
     def __init__(self):
         self.session = Session()
-        
-    def main_loop(self, url=None):
+
+    def main_loop(self, url=None, totalQnum=0):
         if url==None:
             print('Press ctrl-c to quit')
             while True:
