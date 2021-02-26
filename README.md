@@ -54,14 +54,17 @@ It was originally based of [AK163631's Answer Tool](https://github.com/AK163631/
 3. Enter your login details - Ensure that your [Dr frost account](https://www.drfrostmaths.com/account.php) is not linked to google or another service. [(Check here)](https://www.drfrostmaths.com/account.php)
 4. Enter a question url.
     - This should look like `https://www.drfrostmaths.com/do-question.php?aaid=12345678`
-    - make sure that there is nothing else like `qnum=5` in it.
+    - Make sure that there is nothing else like `qnum=5` in it.
+5. If you refresh your page you should see questions being answered.
 
 ### Setup And Use For Repl
 1. Go to the [repl.it site](https://repl.it/@Jacrac04/DFM-Bot#main.py) for this project and click run.
 2. Enter your login details - Ensure that your [Dr frost account](https://www.drfrostmaths.com/account.php) is not linked to google or another service. [(Check here)](https://www.drfrostmaths.com/account.php)
 3. Enter a question url.
     - This should look like `https://www.drfrostmaths.com/do-question.php?aaid=12345678`
-    - make sure that there is nothing else like `qnum=5` in it.
+    - Make sure that there is nothing else like `qnum=5` in it.
+4. If you refresh your page you should see questions being answered.
+
 The repl site works however it is slower and you will have a better user expeciernce is you run it using the exe or source code on your own machine.
 
 
