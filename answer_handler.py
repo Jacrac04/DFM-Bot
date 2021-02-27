@@ -99,7 +99,7 @@ class AnswerHandler:
 
             self.submit(result)
     @catch
-    def answer_question_V3(self, url: str, submit=True):
+    def answer_question_V3(self, url: str, submit: bool):
         try:
             aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
         except IndexError:
@@ -122,9 +122,10 @@ class AnswerHandler:
                 return 
 
             self.submit(result)
+
+        print(f'Answer: {answer}\n')
         return True, True
         
-        print(f'Answer: {answer}\n')
             
 
     def find_answer_qid(self, data: dict, type_: str):

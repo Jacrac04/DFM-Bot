@@ -149,12 +149,15 @@ class MainFrame(LabelFrame):
    
 
     def _start_btn_clicked(self):
+        self.url = None
+        self.totalQnum = 0
         self.url = self.entry_url.get()
         self.totalQnum = self.entry_totalQnum.get()
         try:
-            totalQnum = int(totalQnum)
+            if len(self.totalQnum) > 0:
+                self.totalQnum = int(self.totalQnum)
             # try:
-            self.master.interface.main_loop(self.url, self.totalQnum, self.autoSubmit, self.master)
+            self.master.interface.main_loop(self.url, self.totalQnum, self.autoSubmit.get(), self.master)
             # except InvalidURLException as e:
             #     print(e)#, file=sys.stderr)
         except TypeError:
@@ -209,16 +212,16 @@ class Interface:
             print('Press ctrl-c to quit')
             while True:
                 url = input('\nType Question url: ')
-                res, err = handler.answer_questions_V3(url)
+                res, err = handler.answer_questions_V3(url, autoSubmit)
                 if res:
                     print('No more questions for this URL')
                 else:
                     print(f'Unexpected exception occurred: {err}', file=sys.stderr)
                     traceback.print_exc()
         else:
-            if totalQnum > 0:
+            if len(totalQnum) > 0:
                 for q in range(1,totalQnum+1): #from 1 to toalt +1 as its q=1 when question_num =1
-                    res, err = handler.answer_question_V3(url)
+                    res, err = handler.answer_question_V3(url, autoSubmit)
                     if res:
                         pass
                     else:
@@ -229,9 +232,9 @@ class Interface:
                 print('Done')
 
             else:
-                res, err = handler.answer_questions_V3(url)
+                res, err = handler.answer_question_V3(url, autoSubmit)
                 if res:
-                    print('No more questions for this URL')
+                    pass
                 else:
                     print(f'Unexpected exception occurred: {err}', file=sys.stderr)
                     traceback.print_exc()
