@@ -124,7 +124,7 @@ class AnswerHandler:
             self.submit(result)
 
         print(f'Answer: {answer}\n')
-        return True, True
+        return True, False
         
             
 

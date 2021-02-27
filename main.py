@@ -220,7 +220,8 @@ class Interface:
                 for q in range(1,totalQnum+1): #from 1 to toalt +1 as its q=1 when question_num =1
                     res, err = handler.answer_question_V3(url, autoSubmit)
                     if res:
-                        pass
+                        if err:
+                            break
                     else:
                         print(f'Unexpected exception occurred: {err}', file=sys.stderr)
                         traceback.print_exc()
