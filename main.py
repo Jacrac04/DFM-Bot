@@ -15,6 +15,20 @@ import sys
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
+class IORedirector(object):
+    '''A general class for redirecting I/O to this Text widget.'''
+    def __init__(self,text_area):
+        self.text_area = text_area
+
+class StdoutRedirector(IORedirector):
+    '''A class for redirecting stdout to this Text widget.'''
+    def write(self,text):
+        self.text_area.configure(state='normal')
+        self.text_area.insert(END, text)
+        self.text_area.configure(state='disabled')
+    def flush(self): # needed for file like object
+        pass
+
 
 class InvalidLoginDetails(Exception):
     pass
@@ -34,8 +48,6 @@ class UserInterface(Tk):
 
         self.of = OutputFrame(self, container)
         self.of.grid(column=0, row=3, padx=10, pady=10)
-#         sys.stdout = self.of
-#         sys.stdout.write = self.of.write
 
         self.disable(self.mf.winfo_children())
 
@@ -43,11 +55,20 @@ class UserInterface(Tk):
 
     def enable(self, childList):
         for child in childList:
-            child.configure(state='normal')
-
+            try:
+                child.configure(state='normal')
+            except:
+                pass
     def disable(self, childList):
         for child in childList:
-            child.configure(state='disable')
+            try:
+                child.configure(state='disable')
+            except:
+                grandchildList = child.winfo_children()
+                for grandchild in grandchildList:
+                    grandchild.configure(state='disable')
+
+
 
 
 class LoginFrame(LabelFrame):
@@ -79,7 +100,7 @@ class LoginFrame(LabelFrame):
         try:
             self.master.interface.test_login(email, password)
             self.master.enable(self.master.mf.winfo_children())
-        except Exception as e:
+        except InvalidLoginDetails as e:
             print(e, file=sys.stderr)
             tkm.showerror("Login error", "Incorrect Email or Password")
 
@@ -88,28 +109,57 @@ class MainFrame(LabelFrame):
     def __init__(self, master, controller):
         super().__init__(master)
 
-        self.label_url = Label(self, text="URL")
-        self.label_totalQnum = Label(self, text="Num. of Qs")
+        self.frame_totalQnum = Frame (self)
 
+        self.label_url = Label(self, text="Enter URL")
         self.entry_url = Entry(self)
-        self.entry_totalQnum = Entry(self)
 
         self.label_url.grid(row=0, sticky=E, pady=(10, 1), padx=(10, 1))
-        self.label_totalQnum.grid(row=1, sticky=E, pady=(1, 3), padx=(10, 1))
         self.entry_url.grid(row=0, column=1, pady=(10, 1), padx=(1, 10))
-        self.entry_totalQnum.grid(row=1, column=1, pady=(1, 3), padx=(1, 10))
+        
+        self.autoSubmit = BooleanVar()
+        self.autoSubBtn = Radiobutton(self, 
+               text="Auto Submit:",
+               variable=self.autoSubmit, 
+               value=True,
+                command=lambda:self.master.enable(self.frame_totalQnum.winfo_children()))
+        self.autoSubBtn.grid(row=1, columnspan=2, sticky=W, pady=(10, 0), padx=(10, 10))
 
+
+        self.label_totalQnum = Label(self.frame_totalQnum, text="Num. of Qs to Answer")
+        self.entry_totalQnum = Entry(self.frame_totalQnum)
+
+        self.label_totalQnum.grid(row=2, column=1, columnspan=1, sticky=W, pady=(0, 1), padx=(1, 10))
+        self.entry_totalQnum.grid(row=3, column=1, columnspan=1, pady=(1, 0), padx=(1, 10))
+
+        self.frame_totalQnum.grid(row=3, columnspan=2, pady=(1, 0))
+
+
+        self.manSubBtn = Radiobutton(self, 
+                    text="Manual Submit",
+                    variable=self.autoSubmit,               
+                    value=False,
+                    command=lambda: self.master.disable(self.frame_totalQnum.winfo_children()))
+        self.manSubBtn.grid(row=4, columnspan=2, sticky=W, pady=(5, 10), padx=(10, 10))
+
+        
         self.start_btn = Button(self, text="Start", command=self._start_btn_clicked)
         self.start_btn.grid(columnspan=2, pady=(1, 10), padx=(10, 10))
 
+   
+
     def _start_btn_clicked(self):
-        url = self.entry_url.get()
-        totalQnum = self.entry_totalQnum.get()
+        self.url = None
+        self.totalQnum = 0
+        self.url = self.entry_url.get()
         try:
-            self.master.interface.main_loop(url)
-        except InvalidURLException as e:
-            print(e)#, file=sys.stderr)
-            # tkm.showerror("Login error", "Incorrect Email or Password")
+            if self.autoSubmit.get():
+                self.totalQnum = self.entry_totalQnum.get()
+                self.totalQnum = int(self.totalQnum)
+            self.master.interface.main_loop(self.url, self.totalQnum, self.autoSubmit.get(), self.master)
+        except TypeError:
+            tkm.showerror("Input error", "Invalid totalQnum")
+        
 
 
 
@@ -119,7 +169,7 @@ class OutputFrame(LabelFrame):
         super().__init__(master)
 
         self.textbox = Text(self, height=5, width=25)
-        #self.textbox.configure(state="disabled")
+        self.textbox.configure(state='disabled')
         self.textbox.grid(row=0, column=0)
 
         scrollb = Scrollbar(self, command=self.textbox.yview)
@@ -152,27 +202,40 @@ class Login():
 class Interface:
     def __init__(self):
         self.session = Session()
-        
-    def main_loop(self, url=None):
+
+    def main_loop(self, url=None, totalQnum=0, autoSubmit = True, root=None):
+        handler = AnswerHandler(self.session)
         if url==None:
             print('Press ctrl-c to quit')
             while True:
                 url = input('\nType Question url: ')
-                handler = AnswerHandler(self.session)
-                res, err = handler.answer_questions_V3(url)
+                res, err = handler.answer_questions_V3(url, autoSubmit)
                 if res:
                     print('No more questions for this URL')
                 else:
                     print(f'Unexpected exception occurred: {err}', file=sys.stderr)
                     traceback.print_exc()
         else:
-            handler = AnswerHandler(self.session)
-            res, err = handler.answer_questions_V3(url)
-            if res:
-                print('No more questions for this URL')
+            if totalQnum > 0:
+                for q in range(1,totalQnum+1): #from 1 to toalt +1 as its q=1 when question_num =1
+                    res, err = handler.answer_question_V3(url, autoSubmit)
+                    if res:
+                        if err:
+                            break
+                    else:
+                        print(f'Unexpected exception occurred: {err}', file=sys.stderr)
+                        traceback.print_exc()
+                        break
+                    root.update()
+                print('Done')
+
             else:
-                print(f'Unexpected exception occurred: {err}', file=sys.stderr)
-                traceback.print_exc()
+                res, err = handler.answer_question_V3(url, autoSubmit)
+                if res:
+                    pass
+                else:
+                    print(f'Unexpected exception occurred: {err}', file=sys.stderr)
+                    traceback.print_exc()
 
     def test_login(self, email, password):
         login_url = 'https://www.drfrostmaths.com/process-login.php?url='
@@ -195,6 +258,9 @@ class Interface:
 
 
 
+
+
 if __name__ == "__main__":
     app = UserInterface()
+    sys.stdout = StdoutRedirector(app.of.textbox)
     app.mainloop()
