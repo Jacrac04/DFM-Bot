@@ -90,7 +90,7 @@ class AnswerHandler:
                 answer = self.find_answer_params(data, type_)
 
             data['aaid'] = aaid
-            
+
             try:
                 result = self.answer_functions[type_](data, answer)  # select appropriate function to process answer
             except KeyError:
@@ -98,7 +98,7 @@ class AnswerHandler:
                 continue  # skips auto submit
 
             self.submit(result)
-
+    @catch
     def answer_question_V3(self, url: str, submit=True):
         try:
             aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
@@ -122,6 +122,7 @@ class AnswerHandler:
                 return 
 
             self.submit(result)
+        return True, True
         
         print(f'Answer: {answer}\n')
             
