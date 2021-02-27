@@ -152,14 +152,11 @@ class MainFrame(LabelFrame):
         self.url = None
         self.totalQnum = 0
         self.url = self.entry_url.get()
-        self.totalQnum = self.entry_totalQnum.get()
         try:
-            if len(self.totalQnum) > 0:
+            if self.autoSubmit.get():
+                self.totalQnum = self.entry_totalQnum.get()
                 self.totalQnum = int(self.totalQnum)
-            # try:
             self.master.interface.main_loop(self.url, self.totalQnum, self.autoSubmit.get(), self.master)
-            # except InvalidURLException as e:
-            #     print(e)#, file=sys.stderr)
         except TypeError:
             tkm.showerror("Input error", "Invalid totalQnum")
         
@@ -219,7 +216,7 @@ class Interface:
                     print(f'Unexpected exception occurred: {err}', file=sys.stderr)
                     traceback.print_exc()
         else:
-            if len(totalQnum) > 0:
+            if totalQnum > 0:
                 for q in range(1,totalQnum+1): #from 1 to toalt +1 as its q=1 when question_num =1
                     res, err = handler.answer_question_V3(url, autoSubmit)
                     if res:
