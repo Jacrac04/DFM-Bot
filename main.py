@@ -109,21 +109,22 @@ class MainFrame(LabelFrame):
     def __init__(self, master, controller):
         super().__init__(master)
 
+        self.frame_totalQnum = Frame (self)
+
         self.label_url = Label(self, text="Enter URL")
         self.entry_url = Entry(self)
 
         self.label_url.grid(row=0, sticky=E, pady=(10, 1), padx=(10, 1))
         self.entry_url.grid(row=0, column=1, pady=(10, 1), padx=(1, 10))
         
-        v = IntVar()
+        self.autoSubmit = BooleanVar()
         self.autoSubBtn = Radiobutton(self, 
                text="Auto Submit:",
-               variable=v, 
-               value=1,
-                command=self._auto_sub_btn_clicked)
+               variable=self.autoSubmit, 
+               value=True,
+                command=lambda:self.master.enable(self.frame_totalQnum.winfo_children()))
         self.autoSubBtn.grid(row=1, columnspan=2, sticky=W, pady=(10, 0), padx=(10, 10))
 
-        self.frame_totalQnum = Frame (self)
 
         self.label_totalQnum = Label(self.frame_totalQnum, text="Num. of Qs to Answer")
         self.entry_totalQnum = Entry(self.frame_totalQnum)
@@ -136,24 +137,16 @@ class MainFrame(LabelFrame):
 
         self.manSubBtn = Radiobutton(self, 
                     text="Manual Submit",
-                    variable=v,               
-                    value=2,
-                    command=self._man_sub_btn_clicked)
+                    variable=self.autoSubmit,               
+                    value=False,
+                    command=lambda: self.master.disable(self.frame_totalQnum.winfo_children()))
         self.manSubBtn.grid(row=4, columnspan=2, sticky=W, pady=(5, 10), padx=(10, 10))
 
         
         self.start_btn = Button(self, text="Start", command=self._start_btn_clicked)
         self.start_btn.grid(columnspan=2, pady=(1, 10), padx=(10, 10))
 
-    def _auto_sub_btn_clicked(self):
-        self.autoSubmit = True
-        for child in self.frame_totalQnum.winfo_children():
-            child.configure(state='normal')
-    def _man_sub_btn_clicked(self):
-        self.autoSubmit = False
-        for child in self.frame_totalQnum.winfo_children():
-            child.configure(state='disable')
-
+   
 
     def _start_btn_clicked(self):
         self.url = self.entry_url.get()
