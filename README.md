@@ -49,7 +49,7 @@ It was originally based of [AK163631's Answer Tool](https://github.com/AK163631/
 
 ## Getting Started
 ### The Interface
-![Image of Annotated Interface](https://github.com/Jacrac04/DFM-Bot/blob/master/images/annotatedinterface.png)
+![Image of Annotated Interface](https://github.com/Jacrac04/DFM-Bot/blob/master/images/annotatedInterface.png)
 ### Setup And Use For Windows
 1. Download the latest version from [Releases](https://github.com/Jacrac04/DFM-Bot/releases)
 2. Run the .exe
