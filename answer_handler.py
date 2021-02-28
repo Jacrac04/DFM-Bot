@@ -214,9 +214,13 @@ class AnswerHandler:
 
     @staticmethod
     def answer_textual(data, answer):
-        temp = answer[0].split(' OR ')
         temp2 = []
-        temp2.append(temp[0])
+        for part in answer:
+            if type(part) is str:
+                temp = part.split(' OR ')
+            else:
+                temp[0]=part
+            temp2.append(temp[0])
         data['userAnswer'] = json.dumps(temp2)
         return data
 
