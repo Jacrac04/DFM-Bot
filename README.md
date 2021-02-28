@@ -44,11 +44,11 @@
 ## About The Project
 This is a Bot for [drfrostmaths.com](drfrostmaths.com). If you like this please Star it on Github, it really helps, thanks.
 It was originally based of [AK163631's Answer Tool](https://github.com/AK163631/DFM-Answer-Tool) 
-![Image of Interface](https://github.com/Jacrac04/DFM-Bot/images/Interface.JPG)
+![Image of Interface](https://github.com/Jacrac04/DFM-Bot/blob/master/images/Interface.JPG)
 
 ## Getting Started
 ### The Interface
-![Image of Annotated Interface](https://github.com/Jacrac04/DFM-Bot/images/annotatedinterface.png)
+![Image of Annotated Interface](https://github.com/Jacrac04/DFM-Bot/blob/master/images/annotatedinterface.png)
 ### Setup And Use For Windows
 1. Download the latest version from [Releases](https://github.com/Jacrac04/DFM-Bot/releases)
 2. Run the .exe
