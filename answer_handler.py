@@ -74,21 +74,23 @@ class AnswerHandler:
         print(f'Response: {response}')
 
     @catch
-    def answer_questions_V3(self, url: str):
+    def answer_questions_V3(self, url: str, submit=True):
+        try:
+            aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
+        except IndexError:
+            raise InvalidURLException(url)
+
         while True:
-            try:
-                aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
-            except IndexError:
-                raise InvalidURLException(url)
             page = self.sesh.get(url, headers=self.headers, verify=False).text
             ansMethordType, data, type_ = Parser.parse_V2(page)
 
             if ansMethordType == 1:
                 answer = self.find_answer_qid(data, type_)
-                data['aaid'] = aaid
             elif ansMethordType == 2:
                 answer = self.find_answer_params(data, type_)
-                data['aaid'] = aaid
+
+            data['aaid'] = aaid
+
             try:
                 result = self.answer_functions[type_](data, answer)  # select appropriate function to process answer
             except KeyError:
@@ -96,6 +98,34 @@ class AnswerHandler:
                 continue  # skips auto submit
 
             self.submit(result)
+    @catch
+    def answer_question_V3(self, url: str, submit: bool):
+        try:
+            aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
+        except IndexError:
+            raise InvalidURLException(url)
+        page = self.sesh.get(url, headers=self.headers, verify=False).text
+        ansMethordType, data, type_ = Parser.parse_V2(page)
+
+        if ansMethordType == 1:
+            answer = self.find_answer_qid(data, type_)
+        elif ansMethordType == 2:
+            answer = self.find_answer_params(data, type_)
+
+        data['aaid'] = aaid
+
+        if submit:
+            try:
+                result = self.answer_functions[type_](data, answer)  # select appropriate function to process answer
+            except KeyError:
+                self.new_type(answer, type_)  # not implemented type
+                return True, True
+            
+            self.submit(result)
+
+        print(f'Answer: {self.beautify_Answer(answer)}\n')
+        return True, False
+        
             
 
     def find_answer_qid(self, data: dict, type_: str):
@@ -114,8 +144,6 @@ class AnswerHandler:
         print(f'Question number: {data["qnum"]}', '|', f'Question type: {type_}')
         data = dict(data)
         test = dict()
-        test['numer'] = 9
-        test['denom'] = 5
         data['userAnswer'] = "1"
         
         r = self.sesh.post(self.process_ans_url, headers=self.headers, data=data)
@@ -131,6 +159,14 @@ class AnswerHandler:
             return False
         
             
+    def beautify_Answer(self, answer):
+        try:
+            answer = answer['main'].replace("'",'"').replace('\\left',  "").replace('\\right',  "")
+            return answer
+        except:
+            return answer
+
+    
     @staticmethod
     def answer_numeric(data, answer):
         temp=[]
@@ -140,23 +176,25 @@ class AnswerHandler:
                 data['userAnswer'] = json.dumps(temp)
             else:
                 # find mid value
-                data['userAnswer'] = str(mean([float(item["to"]), float(item["from"])]))
+                temp.append(str(mean([float(item["to"]), float(item["from"])])))
+                data['userAnswer'] = json.dumps(temp)
+                
         return data
     
 
 
     @staticmethod
     def new_type(answer: dict, type_: str):
-        print(f'No system in place to auto submit this answer type ({type_}) yet you will have to type it in manually:'
+        print(f'No system in place to auto submit this answer type ({type_}) you will have to type it in manually then rerun this:'
               f'\n {answer}')
-        input('Press enter to proceed: ')
+        
 
 
 
     @staticmethod
     def answer_expression(data, answer):
         answer = [answer['main']]
-        data['userAnswer'] = '"' + str(answer[0]).replace("'",'"').replace('\\times',  "\\\\times").replace('\\frac',  "\\\\frac").replace('\\sqrt',  "\\\\sqrt").replace('\\left',  "\\\\left").replace('\\right',  "\\\\right") + '"'
+        data['userAnswer'] = '"' + str(answer[0]).replace("'",'"').replace('\\times',  "\\\\times").replace('\\frac',  "\\\\frac").replace('\\sqrt',  "\\\\sqrt").replace('\\left',  "\\\\left").replace('\\right',  "\\\\right").replace('\\le', "\\\\le") + '"'
         return data
 
 
@@ -178,9 +216,13 @@ class AnswerHandler:
 
     @staticmethod
     def answer_textual(data, answer):
-        temp = answer[0].split(' OR ')
         temp2 = []
-        temp2.append(temp[0])
+        for part in answer:
+            if type(part) is str:
+                temp = part.split(' OR ')
+            else:
+                temp[0]=part
+            temp2.append(temp[0])
         data['userAnswer'] = json.dumps(temp2)
         return data
 

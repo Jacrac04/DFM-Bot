@@ -27,8 +27,8 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#setup-and-use-for-repl">Setup</a></li>
-        <li><a href="#setup-and-use-for-windows">Setup</a></li>
+        <li><a href="#setup-and-use-for-windows">Setup Windows</a></li>
+        <li><a href="#setup-and-use-for-repl">Setup Repl</a></li>
         <li><a href="#tips">Tips</a></li>
       </ul>
     </li>
@@ -41,29 +41,39 @@
 
 
 
-
-
 ## About The Project
-This is a Bot for [drfrostmaths.com](drfrostmaths.com). 
-It was originally based of [AK163631's Answer Tool](https://github.com/AK163631/DFM-Answer-Tool)
+This is a Bot for [drfrostmaths.com](drfrostmaths.com). If you like this please Star it on Github, it really helps, thanks.
+It was originally based of [AK163631's Answer Tool](https://github.com/AK163631/DFM-Answer-Tool) 
+
+![Image of Interface](https://github.com/Jacrac04/DFM-Bot/blob/master/images/Interface.JPG)
 
 ## Getting Started
+### The Interface
+![Image of Annotated Interface](https://github.com/Jacrac04/DFM-Bot/blob/master/images/annotatedinterface.png)
 ### Setup And Use For Windows
 1. Download the latest version from [Releases](https://github.com/Jacrac04/DFM-Bot/releases)
 2. Run the .exe
 3. Enter your login details - Ensure that your [Dr frost account](https://www.drfrostmaths.com/account.php) is not linked to google or another service. [(Check here)](https://www.drfrostmaths.com/account.php)
 4. Enter a question url.
     - This should look like `https://www.drfrostmaths.com/do-question.php?aaid=12345678`
-    - Make sure that there is nothing else like `qnum=5` in it.
-5. If you refresh your page you should see questions being answered.
+    - make sure that there is nothing else like `qnum=5` in it.
+5. Select manual or auto submit.
+    - Auto submit lets you enter the amount of the questions for it to answer and it will go through and answer them for you. After clicking start, if you refresh your Dr forst page you should see questions being answered.
+    - Manual submit will give you the answer for the currrent question and then you can enter it yourself. 
+6. Click start.
+
 
 ### Setup And Use For Repl
 1. Go to the [repl.it site](https://repl.it/@Jacrac04/DFM-Bot#main.py) for this project and click run.
 2. Enter your login details - Ensure that your [Dr frost account](https://www.drfrostmaths.com/account.php) is not linked to google or another service. [(Check here)](https://www.drfrostmaths.com/account.php)
 3. Enter a question url.
     - This should look like `https://www.drfrostmaths.com/do-question.php?aaid=12345678`
-    - Make sure that there is nothing else like `qnum=5` in it.
-4. If you refresh your page you should see questions being answered.
+    - make sure that there is nothing else like `qnum=5` in it.
+4. Select manual or auto submit.
+    - Auto submit lets you enter the amount of the questions for it to answer and it will go through and answer them for you. After clicking start, if you refresh your Dr forst page you should see questions being answered.
+    - Manual submit will give you the answer for the currrent question and then you can enter it yourself. 
+5. Click start.
+
 
 The repl site works however it is slower and you will have a better user expeciernce is you run it using the exe or source code on your own machine.
 
@@ -90,12 +100,11 @@ Contributions are what make the open source community such an amazing place to b
 ## Todo
 
 - [x] Add Executable
-- [ ] Finish Testing
-  - [x] Test login
-  - [ ] Test all answer functions thoroughly
+- [x] Finish Testing
+- [x] Add UI
 - [ ] Add More Answer Functions
 - [ ] Auto skill selectors (maybe)
-- [ ] Add images to `README.md`
+- [x] Add images to `README.md`
 
 ## Contact Me 
 To contact me you can make an [issue](https://github.com/Jacrac04/DFM-Bot/issues/new/choose) using the Help Wanted or Question template.
