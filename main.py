@@ -50,6 +50,9 @@ class UserInterface(Tk):
         self.of = OutputFrame(self, container)
         self.of.grid(column=1, row=1, rowspan=2, padx=10, pady=10)
 
+        self.nf = NotesFrame(self, container)
+        self.nf.grid(column=0, row=3, columnspan=2, padx=10, pady=(1,10))
+
         self.disable(self.mf.winfo_children())
 
         self.interface = Interface()
@@ -183,6 +186,35 @@ class OutputFrame(LabelFrame):
     def flush(self): # needed for file like object
         pass
 
+class NotesFrame(LabelFrame):
+    def __init__(self, master, controller):
+        super().__init__(master)
+        #self.geometry('40x40')
+        self.label = Label(self, text="This is a Dr Frost Bot made by github.com/@Jacrac04")
+        self.label.grid(row=0, column=0, padx=(98, 20), pady=5)
+        self.btn_help = Button(self, text="Insturctions And Help", command= lambda: HelpWindow(master))
+        self.btn_help.grid(row=0, column=1, padx=(20, 98), pady=5)
+
+class HelpFrame(LabelFrame):
+    def __init__(self, master, controller):
+        super().__init__(master)
+
+class HelpWindow(Toplevel):
+    def __init__(self, master):
+        Toplevel.__init__(self, master)
+        self.title("Instructions")
+
+        self.textbox = Text(self, height=15, width=125, borderwidth=0, font=("Helvetica", 10))
+        self.textbox.insert(1.0, "Instructions:\n  For Better insructions visit https://github.com/Jacrac04/DFM-Bot\n  1) Firstly login\n  2) Enter the question url:\n       - This should look like https://www.drfrostmaths.com/do-question.php?aaid=12345678\n       - Make sure that there is nothing else like qnum=5 in it.\n   3) Select manual or auto submit.\n       - Auto submit lets you enter the amount of the questions for it to answer and it will go through and answer them for you.\n       - Manual submit will give you the answer for the currrent question and then you can enter it, then repeat this process. \nAbout:\n  This is a Bot for drfrostmaths.com. It was made by github.com/Jacrac04.\n   If you found this usefull please star this on https://github.com/Jacrac04/DFM-Bot. It really helps, thanks.\n   You can find the latest version at https://github.com/Jacrac04/DFM-Bot/releases\n   If this gets any questions wrong feel free to open an issue and report it here: https://github.com/Jacrac04/DFM-Bot/issues/new/choose")
+        self.textbox.configure(state="disabled", inactiveselectbackground=self.textbox.cget("selectbackground"))
+        self.textbox.grid(row=0, column=0)
+
+
+        self.btn_quit = Button(self, text="Close", command=self.destroy)
+        self.btn_quit.grid(column=0)
+
+
+       
 
 
 
