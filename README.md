@@ -64,7 +64,7 @@ It was originally based of [AK163631's Answer Tool](https://github.com/AK163631/
 
 
 ### Setup And Use For Repl
-1. Go to the [repl.it site](https://repl.it/@Jacrac04/DFM-Bot#main.py) for this project and click run.
+1. Go to the [repl.it site](https://repl.it/@Jacrac04/DFM-Bot#main.py) for this project and click fork. It is important you create your own version as repl shares one instance between everyone, so people may be able to get your Dr Frost password. Once you have done this you can run it.
 2. Enter your login details - Ensure that your [Dr frost account](https://www.drfrostmaths.com/account.php) is not linked to google or another service. [(Check here)](https://www.drfrostmaths.com/account.php)
 3. Enter a question url.
     - This should look like `https://www.drfrostmaths.com/do-question.php?aaid=12345678`
