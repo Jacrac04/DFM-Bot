@@ -184,7 +184,7 @@ class AnswerHandler:
     @staticmethod
     def new_type(answer: dict, type_: str):
         print(f'No system in place to auto submit this answer type ({type_}) you will have to type it in manually then rerun this:'
-              f'\n {answer}')
+              f'\n {beautify_Answer(answer)}')
         
 
 
