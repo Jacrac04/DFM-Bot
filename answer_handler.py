@@ -119,8 +119,8 @@ class AnswerHandler:
                 result = self.answer_functions[type_](data, answer)  # select appropriate function to process answer
             except KeyError:
                 self.new_type(answer, type_)  # not implemented type
-                return 
-
+                return True, True
+            
             self.submit(result)
 
         print(f'Answer: {self.beautify_Answer(answer)}\n')
@@ -176,7 +176,9 @@ class AnswerHandler:
                 data['userAnswer'] = json.dumps(temp)
             else:
                 # find mid value
-                data['userAnswer'] = str(mean([float(item["to"]), float(item["from"])]))
+                temp.append(str(mean([float(item["to"]), float(item["from"])])))
+                data['userAnswer'] = json.dumps(temp)
+                
         return data
     
 
@@ -192,7 +194,7 @@ class AnswerHandler:
     @staticmethod
     def answer_expression(data, answer):
         answer = [answer['main']]
-        data['userAnswer'] = '"' + str(answer[0]).replace("'",'"').replace('\\times',  "\\\\times").replace('\\frac',  "\\\\frac").replace('\\sqrt',  "\\\\sqrt").replace('\\left',  "\\\\left").replace('\\right',  "\\\\right") + '"'
+        data['userAnswer'] = '"' + str(answer[0]).replace("'",'"').replace('\\times',  "\\\\times").replace('\\frac',  "\\\\frac").replace('\\sqrt',  "\\\\sqrt").replace('\\left',  "\\\\left").replace('\\right',  "\\\\right").replace('\\le', "\\\\le") + '"'
         return data
 
 

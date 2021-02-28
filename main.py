@@ -161,7 +161,7 @@ class MainFrame(LabelFrame):
                 self.totalQnum = self.entry_totalQnum.get()
                 self.totalQnum = int(self.totalQnum)
             self.master.interface.main_loop(self.url, self.totalQnum, self.autoSubmit.get(), self.master)
-        except TypeError:
+        except TypeError or ValueError:
             tkm.showerror("Input error", "Invalid totalQnum")
         
 
