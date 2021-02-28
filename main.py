@@ -192,7 +192,7 @@ class NotesFrame(LabelFrame):
         #self.geometry('40x40')
         self.label = Label(self, text="This is a Dr Frost Bot made by github.com/@Jacrac04")
         self.label.grid(row=0, column=0, padx=(98, 20), pady=5)
-        self.btn_help = Button(self, text="Insturctions And Help", command= lambda: HelpWindow(master))
+        self.btn_help = Button(self, text="Instructions And Help", command= lambda: HelpWindow(master))
         self.btn_help.grid(row=0, column=1, padx=(20, 98), pady=5)
 
 class HelpFrame(LabelFrame):
