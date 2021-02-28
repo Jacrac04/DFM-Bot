@@ -123,7 +123,7 @@ class AnswerHandler:
 
             self.submit(result)
 
-        print(f'Answer: {answer}\n')
+        print(f'Answer: {self.beautify_Answer(answer)}\n')
         return True, False
         
             
@@ -159,6 +159,14 @@ class AnswerHandler:
             return False
         
             
+    def beautify_Answer(self, answer):
+        try:
+            answer = answer['main'].replace("'",'"').replace('\\left',  "").replace('\\right',  "")
+            return answer
+        except:
+            return answer
+
+    
     @staticmethod
     def answer_numeric(data, answer):
         temp=[]
