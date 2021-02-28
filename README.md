@@ -103,7 +103,7 @@ Contributions are what make the open source community such an amazing place to b
 - [x] Add UI
 - [ ] Add More Answer Functions
 - [ ] Auto skill selectors (maybe)
-- [ ] Add images to `README.md`
+- [x] Add images to `README.md`
 
 ## Contact Me 
 To contact me you can make an [issue](https://github.com/Jacrac04/DFM-Bot/issues/new/choose) using the Help Wanted or Question template.
