@@ -25,6 +25,7 @@ class StdoutRedirector(IORedirector):
     def write(self,text):
         self.text_area.configure(state='normal')
         self.text_area.insert(END, text)
+        self.text_area.see("end")
         self.text_area.configure(state='disabled')
     def flush(self): # needed for file like object
         pass
@@ -47,7 +48,7 @@ class UserInterface(Tk):
         self.mf.grid(column=0, row=2, padx=10, pady=10)
 
         self.of = OutputFrame(self, container)
-        self.of.grid(column=0, row=3, padx=10, pady=10)
+        self.of.grid(column=1, row=1, rowspan=2, padx=10, pady=10)
 
         self.disable(self.mf.winfo_children())
 
@@ -168,7 +169,7 @@ class OutputFrame(LabelFrame):
     def __init__(self, master, controller):
         super().__init__(master)
 
-        self.textbox = Text(self, height=5, width=25)
+        self.textbox = Text(self, height=19, width=50)
         self.textbox.configure(state='disabled')
         self.textbox.grid(row=0, column=0)
 
