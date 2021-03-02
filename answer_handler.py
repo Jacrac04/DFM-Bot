@@ -74,7 +74,7 @@ class AnswerHandler:
         print(f'Request: {data}')
         print(f'Response: {response}')
 
-    #@catch
+    @catch
     def answer_questions_V3(self, url: str, submit=True):
         try:
             aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
@@ -99,7 +99,7 @@ class AnswerHandler:
                 continue  # skips auto submit
 
             self.submit(result)
-    #@catch
+    @catch
     def answer_question_V3(self, url: str, submit: bool):
         try:
             aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
