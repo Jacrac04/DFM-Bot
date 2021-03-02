@@ -168,18 +168,20 @@ class AnswerHandler:
             return answer
 
     
-    @staticmethod
     def answer_numeric(data, answer):
         temp=[]
         for index, item in enumerate(answer):
-            if item['exact']:
-                temp.append(str(item['exact']))
-                data['userAnswer'] = json.dumps(temp)
-            else:
-                # find mid value
+            try:
+                if item['exact']:
+                    temp.append(str(item['exact']))
+                    data['userAnswer'] = json.dumps(temp)
+                else:
+                    # find mid value
+                    temp.append(str(mean([float(item["to"]), float(item["from"])])))
+                    data['userAnswer'] = json.dumps(temp)
+            except:
                 temp.append(str(mean([float(item["to"]), float(item["from"])])))
                 data['userAnswer'] = json.dumps(temp)
-                
         return data
     
 
