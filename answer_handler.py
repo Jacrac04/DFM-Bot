@@ -167,7 +167,7 @@ class AnswerHandler:
         except:
             return answer
 
-    
+    @staticmethod
     def answer_numeric(data, answer):
         temp=[]
         for index, item in enumerate(answer):
