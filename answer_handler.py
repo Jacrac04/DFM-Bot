@@ -267,5 +267,15 @@ class AnswerHandler:
 
     @staticmethod
     def answer_desmosLine(data, answer):
-        data['userAnswer'] = json.dumps(answer)
+        print(answer)
+        if data['permid'] == '240':
+            print(answer)
+            m, c = answer
+            temp = [{"x":"0","y":""},{"x":"1","y":""}]
+            temp[0]['y'] = (0 *m) + c
+            temp[1]['y'] = (1 *m) + c
+            #y=mx+c
+            data['userAnswer'] = temp
+        else:
+            data['userAnswer'] = json.dumps(answer)
         return data
