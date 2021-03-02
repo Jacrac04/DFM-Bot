@@ -49,7 +49,8 @@ class AnswerHandler:
                                  'table': self.answer_table,
                                  'shape': self.answer_shape,
                                  'list': self.answer_list,
-                                 'standardform': self.answer_standardform}
+                                 'standardform': self.answer_standardform,
+                                 'desmos_line': self.answer_desmosLine}
 
 
     def find_answer(self, data: dict, type_: str):
@@ -73,7 +74,7 @@ class AnswerHandler:
         print(f'Request: {data}')
         print(f'Response: {response}')
 
-    @catch
+    #@catch
     def answer_questions_V3(self, url: str, submit=True):
         try:
             aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
@@ -98,7 +99,7 @@ class AnswerHandler:
                 continue  # skips auto submit
 
             self.submit(result)
-    @catch
+    #@catch
     def answer_question_V3(self, url: str, submit: bool):
         try:
             aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
@@ -218,10 +219,11 @@ class AnswerHandler:
     def answer_textual(data, answer):
         temp2 = []
         for part in answer:
+            temp = []
             if type(part) is str:
                 temp = part.split(' OR ')
             else:
-                temp[0]=part
+                temp.append(part)
             temp2.append(temp[0])
         data['userAnswer'] = json.dumps(temp2)
         return data
@@ -254,5 +256,10 @@ class AnswerHandler:
 
     @staticmethod
     def answer_standardform(data, answer):
+        data['userAnswer'] = json.dumps(answer)
+        return data
+
+    @staticmethod
+    def answer_desmosLine(data, answer):
         data['userAnswer'] = json.dumps(answer)
         return data
