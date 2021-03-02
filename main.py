@@ -115,7 +115,7 @@ class MainFrame(LabelFrame):
 
         self.frame_totalQnum = Frame (self)
 
-        self.label_url = Label(self, text="Enter URL")
+        self.label_url = Label(self, text="URL/AAID")
         self.entry_url = Entry(self)
 
         self.label_url.grid(row=0, sticky=E, pady=(10, 1), padx=(10, 1))
@@ -155,11 +155,15 @@ class MainFrame(LabelFrame):
     def _start_btn_clicked(self):
         self.url = None
         self.totalQnum = 0
-        self.url = self.entry_url.get()
+        url = self.entry_url.get()
         try:
             if self.autoSubmit.get():
                 self.totalQnum = self.entry_totalQnum.get()
                 self.totalQnum = int(self.totalQnum)
+            if len(url) == 8:
+                self.url = 'https://www.drfrostmaths.com/do-question.php?aaid=' + url
+            else:
+                self.url = url
             self.master.interface.main_loop(self.url, self.totalQnum, self.autoSubmit.get(), self.master)
         except TypeError or ValueError:
             tkm.showerror("Input error", "Invalid totalQnum")
