@@ -247,7 +247,15 @@ class AnswerHandler:
 
     @staticmethod
     def answer_table(data, answer):
+        if data['permid'] == '164':
+            data['permid'] = '244'
+        #     temp=[]
+        #     for index, item in enumerate(answer):
+        #         temp.append(str[item])
+        #     data['userAnswer']=json.dumps(temp)                 
+        # else:
         data['userAnswer']=json.dumps(answer)
+        print(answer, data['userAnswer'])
         return data
 
     @staticmethod
@@ -267,14 +275,20 @@ class AnswerHandler:
 
     @staticmethod
     def answer_desmosLine(data, answer):
-        print(answer)
         if data['permid'] == '240':
-            print(answer)
             m, c = answer
             temp = [{"x":"0","y":""},{"x":"1","y":""}]
             temp[0]['y'] = (0 *m) + c
             temp[1]['y'] = (1 *m) + c
             #y=mx+c
+            data['userAnswer'] = temp
+        elif data['permid'] == 484:
+            a, b, c = answer
+            temp = [{"x":"0","y":""},{"x":"1","y":""},{"x":"2","y":""}]
+            temp[0]['y'] = (0 * a) + (0 * b) + c
+            temp[1]['y'] = (1 * a) + (1 * b) + c
+            temp[2]['y'] = (4 * a) + (2 * b) + c
+            #y= ax^2 + bx + c
             data['userAnswer'] = temp
         else:
             data['userAnswer'] = json.dumps(answer)
