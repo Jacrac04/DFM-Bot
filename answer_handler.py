@@ -175,6 +175,10 @@ class AnswerHandler:
                 if item['exact']:
                     temp.append(str(item['exact']))
                     data['userAnswer'] = json.dumps(temp)
+                elif item['exact'] == 0:
+                    temp.append(str(item['exact']))
+                    data['userAnswer'] = json.dumps(temp)
+                    
                 else:
                     # find mid value
                     temp.append(str(mean([float(item["to"]), float(item["from"])])))
