@@ -201,7 +201,7 @@ class AnswerHandler:
     @staticmethod
     def answer_expression(data, answer):
         answer = [answer['main']]
-        data['userAnswer'] = '"' + str(answer[0]).replace("'",'"').replace('\\times',  "\\\\times").replace('\\frac',  "\\\\frac").replace('\\sqrt',  "\\\\sqrt").replace('\\left',  "\\\\left").replace('\\right',  "\\\\right").replace('\\le', "\\\\le") + '"'
+        data['userAnswer'] = '"' + str(answer[0]).replace("'",'"').replace('\\',  "\\\\")+ '"'#.replace('\\frac',  "\\\\frac").replace('\\sqrt',  "\\\\sqrt").replace('\\left',  "\\\\left").replace('\\right',  "\\\\right").replace('\\le', "\\\\le").replace('\\pi',  "\\\\pi") + '"'
         return data
 
 
