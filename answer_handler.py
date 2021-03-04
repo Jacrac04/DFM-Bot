@@ -49,7 +49,10 @@ class AnswerHandler:
                                  'table': self.answer_table,
                                  'shape': self.answer_shape,
                                  'list': self.answer_list,
-                                 'standardform': self.answer_standardform}
+                                 'standardform': self.answer_standardform,
+                                 'desmos_line': self.answer_desmosLine,
+                                 'ratio': self.answer_ratio,
+                                 'ordered': self.answer_ordered}
 
 
     def find_answer(self, data: dict, type_: str):
@@ -166,19 +169,25 @@ class AnswerHandler:
         except:
             return answer
 
-    
     @staticmethod
     def answer_numeric(data, answer):
         temp=[]
         for index, item in enumerate(answer):
-            if item['exact']:
-                temp.append(str(item['exact']))
-                data['userAnswer'] = json.dumps(temp)
-            else:
-                # find mid value
+            try:
+                if item['exact']:
+                    temp.append(str(item['exact']))
+                    data['userAnswer'] = json.dumps(temp)
+                elif item['exact'] == 0:
+                    temp.append(str(item['exact']))
+                    data['userAnswer'] = json.dumps(temp)
+                    
+                else:
+                    # find mid value
+                    temp.append(str(mean([float(item["to"]), float(item["from"])])))
+                    data['userAnswer'] = json.dumps(temp)
+            except:
                 temp.append(str(mean([float(item["to"]), float(item["from"])])))
                 data['userAnswer'] = json.dumps(temp)
-                
         return data
     
 
@@ -194,7 +203,7 @@ class AnswerHandler:
     @staticmethod
     def answer_expression(data, answer):
         answer = [answer['main']]
-        data['userAnswer'] = '"' + str(answer[0]).replace("'",'"').replace('\\times',  "\\\\times").replace('\\frac',  "\\\\frac").replace('\\sqrt',  "\\\\sqrt").replace('\\left',  "\\\\left").replace('\\right',  "\\\\right").replace('\\le', "\\\\le") + '"'
+        data['userAnswer'] = '"' + str(answer[0]).replace("'",'"').replace('\\',  "\\\\")+ '"'#.replace('\\frac',  "\\\\frac").replace('\\sqrt',  "\\\\sqrt").replace('\\left',  "\\\\left").replace('\\right',  "\\\\right").replace('\\le', "\\\\le").replace('\\pi',  "\\\\pi") + '"'
         return data
 
 
@@ -218,10 +227,11 @@ class AnswerHandler:
     def answer_textual(data, answer):
         temp2 = []
         for part in answer:
+            temp = []
             if type(part) is str:
                 temp = part.split(' OR ')
             else:
-                temp[0]=part
+                temp.append(part)
             temp2.append(temp[0])
         data['userAnswer'] = json.dumps(temp2)
         return data
@@ -239,7 +249,18 @@ class AnswerHandler:
 
     @staticmethod
     def answer_table(data, answer):
+        try:
+            if data['permid'] == '164':
+                data['permid'] = '244'
+        except:
+            pass
+        #     temp=[]
+        #     for index, item in enumerate(answer):
+        #         temp.append(str[item])
+        #     data['userAnswer']=json.dumps(temp)                 
+        # else:
         data['userAnswer']=json.dumps(answer)
+        print(answer, data['userAnswer'])
         return data
 
     @staticmethod
@@ -255,4 +276,41 @@ class AnswerHandler:
     @staticmethod
     def answer_standardform(data, answer):
         data['userAnswer'] = json.dumps(answer)
+        return data
+
+    @staticmethod
+    def answer_ratio(data, answer):
+        data['userAnswer'] = json.dumps(answer)
+        return data
+
+    @staticmethod
+    def answer_ordered(data, answer):
+        data['userAnswer'] = json.dumps(answer)
+        return data
+
+    @staticmethod
+    def answer_desmosLine(data, answer):
+        try:
+            a = data['permid']
+        except:
+            data['permid'] = 0
+        if data['permid'] == '240':
+            m, c = answer
+            temp = [{"x":"0","y":""},{"x":"1","y":""}]
+            temp[0]['y'] = (0 *m) + c
+            temp[1]['y'] = (1 *m) + c
+            #y=mx+c
+            data['userAnswer'] = temp
+        elif data['permid'] == 484 or data['permid'] == 484:
+            a, b, c = answer
+            temp = [{"x":"0","y":""},{"x":"1","y":""},{"x":"2","y":""}]
+            temp[0]['y'] = (0 * a) + (0 * b) + c
+            temp[1]['y'] = (1 * a) + (1 * b) + c
+            temp[2]['y'] = (4 * a) + (2 * b) + c
+            #y= ax^2 + bx + c
+            data['userAnswer'] = temp
+        elif data['permid'] == '583':
+            raise KeyError # Its weird
+        else:
+            data['userAnswer'] = json.dumps(answer)
         return data
