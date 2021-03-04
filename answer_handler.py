@@ -50,7 +50,9 @@ class AnswerHandler:
                                  'shape': self.answer_shape,
                                  'list': self.answer_list,
                                  'standardform': self.answer_standardform,
-                                 'desmos_line': self.answer_desmosLine}
+                                 'desmos_line': self.answer_desmosLine,
+                                 'ratio': self.answer_ratio,
+                                 'ordered': self.answer_ordered}
 
 
     def find_answer(self, data: dict, type_: str):
@@ -247,8 +249,11 @@ class AnswerHandler:
 
     @staticmethod
     def answer_table(data, answer):
-        if data['permid'] == '164':
-            data['permid'] = '244'
+        try:
+            if data['permid'] == '164':
+                data['permid'] = '244'
+        except:
+            pass
         #     temp=[]
         #     for index, item in enumerate(answer):
         #         temp.append(str[item])
@@ -274,7 +279,21 @@ class AnswerHandler:
         return data
 
     @staticmethod
+    def answer_ratio(data, answer):
+        data['userAnswer'] = json.dumps(answer)
+        return data
+
+    @staticmethod
+    def answer_ordered(data, answer):
+        data['userAnswer'] = json.dumps(answer)
+        return data
+
+    @staticmethod
     def answer_desmosLine(data, answer):
+        try:
+            a = data['permid']
+        except:
+            data['permid'] = 0
         if data['permid'] == '240':
             m, c = answer
             temp = [{"x":"0","y":""},{"x":"1","y":""}]
@@ -282,7 +301,7 @@ class AnswerHandler:
             temp[1]['y'] = (1 *m) + c
             #y=mx+c
             data['userAnswer'] = temp
-        elif data['permid'] == 484:
+        elif data['permid'] == 484 or data['permid'] == 484:
             a, b, c = answer
             temp = [{"x":"0","y":""},{"x":"1","y":""},{"x":"2","y":""}]
             temp[0]['y'] = (0 * a) + (0 * b) + c
@@ -290,6 +309,8 @@ class AnswerHandler:
             temp[2]['y'] = (4 * a) + (2 * b) + c
             #y= ax^2 + bx + c
             data['userAnswer'] = temp
+        elif data['permid'] == '583':
+            raise KeyError # Its weird
         else:
             data['userAnswer'] = json.dumps(answer)
         return data
