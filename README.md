@@ -102,7 +102,7 @@ Contributions are what make the open source community such an amazing place to b
 - [x] Add Executable
 - [x] Finish Testing
 - [x] Add UI
-- [ ] Add More Answer Functions
+- [x] Add More Answer Functions
 - [ ] Auto skill selectors (maybe)
 - [x] Add images to `README.md`
 
