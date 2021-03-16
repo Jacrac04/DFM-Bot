@@ -45,6 +45,10 @@
 This is a Bot for [drfrostmaths.com](drfrostmaths.com). If you like this please Star it on Github, it really helps, thanks.
 It was originally based of [AK163631's Answer Tool](https://github.com/AK163631/DFM-Answer-Tool) 
 
+### Warning: Dr Frost Will Ban You
+I got banned after 300 questions.
+
+
 ![Image of Interface](https://github.com/Jacrac04/DFM-Bot/blob/master/images/Interface.JPG)
 
 ## Getting Started
