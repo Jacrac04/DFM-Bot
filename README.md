@@ -46,7 +46,7 @@ This is a Bot for [drfrostmaths.com](drfrostmaths.com). If you like this please 
 It was originally based of [AK163631's Answer Tool](https://github.com/AK163631/DFM-Answer-Tool) 
 
 ### Warning: Dr Frost Will Ban You
-I got banned after 300 questions.
+I got banned after 300 questions. The only way to get your account un-banned is to get your teacher to contact Dr Frost. Because my account is banned I will no longer be able to test this.
 
 
 ![Image of Interface](https://github.com/Jacrac04/DFM-Bot/blob/master/images/Interface.JPG)
