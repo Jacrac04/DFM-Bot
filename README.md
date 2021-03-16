@@ -43,7 +43,7 @@
 
 ## About The Project
 This is a Bot for [drfrostmaths.com](drfrostmaths.com). If you like this please Star it on Github, it really helps, thanks.
-It was originally based of [AK163631's Answer Tool](https://github.com/AK163631/DFM-Answer-Tool) 
+It was originally based of [AK163631's Answer Tool](https://github.com/AK163631/DFM-Answer-Tool). This is for educational purposes only.
 
 ### Warning: Dr Frost Will Ban You
 I got banned after 300 questions. The only way to get your account un-banned is to get your teacher to contact Dr Frost. Because my account is banned I will no longer be able to test this.
