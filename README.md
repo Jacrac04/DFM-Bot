@@ -85,6 +85,7 @@ The repl site works however it is slower and you will have a better user expecie
 
 ### Tips
 * IMPORTANT: Please read [this](https://github.com/Jacrac04/DFM-Bot/issues/1) before using
+* I recommend that you change your Dr Frost password to something unique that you dont use for anything else before using this.
 * If you use a 'keep going till i say' question url the only way to stop the bot is by closing the window or terminating the process
 * After about 15 on one 'skill' you will reach 'master' level. You can keep answering questions on that skill but you will not gain points. So if you want to get lots of points go to on Dr frost practice --> key skills then select lots of skills which you haven't done before then practise them. 
 
