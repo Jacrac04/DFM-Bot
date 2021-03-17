@@ -57,14 +57,15 @@ I got banned after 300 questions. The only way to get your account un-banned is 
 ### Setup And Use For Windows
 1. Download the latest version from [Releases](https://github.com/Jacrac04/DFM-Bot/releases)
 2. Run the .exe
-3. Enter your login details - Ensure that your [Dr frost account](https://www.drfrostmaths.com/account.php) is not linked to google or another service. [(Check here)](https://www.drfrostmaths.com/account.php)
-4. Enter a question url or the AAID
+     - If it gets blocked by your antivirus or Windows, I recommend that you DO NOT run it. Instead use repl or download the source code and run that.
+4. Enter your login details - Ensure that your [Dr frost account](https://www.drfrostmaths.com/account.php) is not linked to google or another service. [(Check here)](https://www.drfrostmaths.com/account.php)
+5. Enter a question url or the AAID
     - This should look like `https://www.drfrostmaths.com/do-question.php?aaid=12345678` or `12345678`
     - make sure that there is nothing else like `qnum=5` in it.
-5. Select manual or auto submit.
+6. Select manual or auto submit.
     - Auto submit lets you enter the amount of the questions for it to answer and it will go through and answer them for you. After clicking start, if you refresh your Dr forst page you should see questions being answered.
     - Manual submit will give you the answer for the currrent question and then you can enter it yourself. 
-6. Click start.
+7. Click start.
 
 
 ### Setup And Use For Repl
