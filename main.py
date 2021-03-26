@@ -136,6 +136,13 @@ class MainFrame(LabelFrame):
         self.label_totalQnum.grid(row=2, column=1, columnspan=1, sticky=W, pady=(0, 1), padx=(1, 10))
         self.entry_totalQnum.grid(row=3, column=1, columnspan=1, pady=(1, 0), padx=(1, 10))
 
+        self.label_delay = Label(self.frame_totalQnum, text="Delay (seconds):")
+        self.entry_delay = Entry(self.frame_totalQnum)
+
+        self.label_delay.grid(row=4, column=1, columnspan=1, sticky=W, pady=(0, 1), padx=(1, 10))
+        self.entry_delay.grid(row=5, column=1, columnspan=1, pady=(1, 0), padx=(1, 10))
+
+
         self.frame_totalQnum.grid(row=3, columnspan=2, pady=(1, 0))
 
 
