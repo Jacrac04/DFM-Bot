@@ -163,17 +163,19 @@ class MainFrame(LabelFrame):
         self.url = None
         self.totalQnum = 0
         url = self.entry_url.get()
-        try:
-            if self.autoSubmit.get():
-                self.totalQnum = self.entry_totalQnum.get()
-                self.totalQnum = int(self.totalQnum)
-            if len(url) == 8:
-                self.url = 'https://www.drfrostmaths.com/do-question.php?aaid=' + url
-            else:
-                self.url = url
-            self.master.interface.main_loop(self.url, self.totalQnum, self.autoSubmit.get(), self.master)
-        except TypeError or ValueError:
-            tkm.showerror("Input error", "Invalid totalQnum")
+        #try:
+        if self.autoSubmit.get():
+            self.totalQnum = self.entry_totalQnum.get()
+            self.totalQnum = int(self.totalQnum)
+            self.delay = self.entry_delay.get()
+            self.delay = int(self.delay)
+        if len(url) == 8:
+            self.url = 'https://www.drfrostmaths.com/do-question.php?aaid=' + url
+        else:
+            self.url = url
+        self.master.interface.main_loop(self.url, self.totalQnum, self.delay, self.autoSubmit.get(), self.master)
+        #except TypeError or ValueError:
+        #    tkm.showerror("Input error", "Invalid totalQnum or Delay")
         
 
 
@@ -247,7 +249,7 @@ class Interface:
     def __init__(self):
         self.session = Session()
 
-    def main_loop(self, url=None, totalQnum=0, autoSubmit = True, root=None):
+    def main_loop(self, url=None, totalQnum=0, delay=0, autoSubmit = True, root=None):
         handler = AnswerHandler(self.session)
         if url==None:
             print('Press ctrl-c to quit')
@@ -271,6 +273,8 @@ class Interface:
                         traceback.print_exc()
                         break
                     root.update()
+                    for time in range(0,delay*100,1):
+                        root.after(10, root.update())
                 print('Done')
 
             else:
