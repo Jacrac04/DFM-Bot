@@ -229,12 +229,16 @@ class TaskGeneratorFrame(LabelFrame):
         self.doStarted = BooleanVar()
         self.doComplete = BooleanVar()
 
-        self.doUnseenBtn = Checkbutton(self.frame_tid, text='Unseen',variable=self.doUnseen, onvalue=1, offvalue=0)
+        self.doUnseen.set(False)
+        self.doStarted.set(False)
+        self.doComplete.set(False)
+
+        self.doUnseenBtn = Checkbutton(self.frame_tid, text='Unseen',variable=self.doUnseen, onvalue=True, offvalue=False)
         self.doUnseenBtn.grid(row=1, column=0)
-        self.doUnseenBtn = Checkbutton(self.frame_tid, text='Started',variable=self.doStarted, onvalue=1, offvalue=0)
-        self.doUnseenBtn.grid(row=2, column=0)
-        self.doUnseenBtn = Checkbutton(self.frame_tid, text='Completed',variable=self.doComplete, onvalue=1, offvalue=0)
-        self.doUnseenBtn.grid(row=3, column=0)
+        self.doStartedBtn = Checkbutton(self.frame_tid, text='Started',variable=self.doStarted, onvalue=True, offvalue=False)
+        self.doStartedBtn.grid(row=2, column=0)
+        self.doCompleteBtn = Checkbutton(self.frame_tid, text='Completed',variable=self.doComplete, onvalue=True, offvalue=False)
+        self.doCompleteBtn.grid(row=3, column=0)
 
         self.frame_tid.grid(row=1, column=3, rowspan=3)
 
@@ -245,6 +249,13 @@ class TaskGeneratorFrame(LabelFrame):
 
     def _Generate_btn_clicked(self):
         tidNum = []
+        if self.doUnseen.get():
+            tidNum.append(0)
+        if self.doStarted.get():
+            tidNum.append(1)
+        if self.doComplete.get():
+            tidNum.append(2)
+        
         try:
             self.master.interface.generate_task(self.mode.get(), self.intlerleave.get(), tidNum, self.master)
         except TypeError or ValueError:

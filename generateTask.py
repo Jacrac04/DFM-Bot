@@ -17,7 +17,6 @@ class taskGenerator:
             mode = 'nostop'
         else:
             return None, 'Mode not impemented'
-        
         keySkillsIDsList = []
         for num in tidNum:
             if num == 0:
@@ -27,19 +26,18 @@ class taskGenerator:
             elif num == 2:
                 tid = 'complete'
             keySkillsIDs, err = self.getSkillID(tid)
-            print(keySkillsIDs)
             if err:
                 return None, 'Error Generating Questions'
             keySkillsIDsList.extend(keySkillsIDs)
         
-        fullURL = self.get_task_url_base + f'permid{str(keySkillsIDsList)[1:-1]}&interleave={interleave}&cmode={mode}'
+        fullURL = self.get_task_url_base + f'permid={str(keySkillsIDsList)[1:-1]}&interleave={interleave}&cmode={mode}'
         res = self.sesh.get(fullURL, allow_redirects=True)
         return res.url, False
 
 
 
     def getSkillID(self, tid='unseen'):
-        res = self.sesh.post(get_unseen_url_base + tid)
+        res = self.sesh.post(self.get_unseen_url_base + tid)
         resData = json.loads(res.text)
         keySkillsIDs = []
         for x in resData['keyskilllist']:
