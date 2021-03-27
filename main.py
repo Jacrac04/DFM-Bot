@@ -4,6 +4,7 @@ import sys
 
 from requests import Session
 from answer_handler import AnswerHandler
+from generateTask import taskGenerator
 import urllib3
 
 from tkinter import *
@@ -169,6 +170,38 @@ class MainFrame(LabelFrame):
             tkm.showerror("Input error", "Invalid totalQnum")
         
 
+class TaskGeneratorFrame(LabelFrame):
+    def __init__(self, master, controller):
+        super().__init__(master)
+
+     
+        self.mode = BooleanVar()
+        self.mode0Btn = Radiobutton(self, 
+               text="",
+               variable=self.mode, 
+               value=0)
+        self.mode0Btn.grid(row=1, columnspan=2, sticky=W, pady=(10, 0), padx=(10, 10))
+
+        self.mode1Btn = Radiobutton(self, 
+                    text="Manual Submit",
+                    variable=self.autoSubmit,               
+                    value=False)
+        self.mode1Btn.grid(row=4, columnspan=2, sticky=W, pady=(5, 10), padx=(10, 10))
+
+        
+        self.start_btn = Button(self, text="Generate", command=self._Generate_btn_clicked)
+        self.start_btn.grid(columnspan=2, pady=(1, 10), padx=(10, 10))
+
+
+    def _Generate_btn_clicked(self):
+        self.url = None
+        self.totalQnum = 0
+        url = self.entry_url.get()
+        try:
+            self.master.interface.generate_task(self.mode.get(), self.master)
+        except TypeError or ValueError:
+            tkm.showerror("Input error", "")
+
 
 
 
@@ -291,6 +324,14 @@ class Interface:
             
         except BaseException:
             raise InvalidLoginDetails(f'Email: {email}, Password: {"*" * len(password)}')
+    
+    def generate_task():
+        generator = taskGenerator(self.session)
+        res, err = generator.makeTask_V1(modeNum=0, interleave=0, tidNum=0)
+        if res:
+            print(f'Generated URL: {res}')
+        if err:
+            print(err)
 
 
 
