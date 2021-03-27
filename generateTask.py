@@ -12,7 +12,7 @@ class taskGenerator:
         self.get_task_url_base = 'https://www.drfrostmaths.com/process-startkeyskillassessment.php?'
         self.permid_blacklist = []
 
-    def makeTask_V1(self, modeNum=0, interleave=0, tidNum=[0]):
+    def makeTask_V1(self, modeNum=0, interleave=0, tidNum=[0], amount=30):
         if modeNum == 0:
             mode = 'nostop'
         else:
@@ -36,7 +36,8 @@ class taskGenerator:
             except ValueError:
                 continue
 
-        fullURL = self.get_task_url_base + f'permid={str(keySkillsIDsList)[1:-1]}&interleave={interleave}&cmode={mode}'
+        todo = keySkillsIDsList[:amount]         
+        fullURL = self.get_task_url_base + f'permid={str(todo)[1:-1]}&interleave={interleave}&cmode={mode}'
         res = self.sesh.get(fullURL, allow_redirects=True)
         return res.url, False
 

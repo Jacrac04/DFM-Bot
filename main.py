@@ -227,7 +227,7 @@ class TaskGeneratorFrame(LabelFrame):
         self.frame_questionNum.grid(row=2, columnspan=2, pady=(1, 0))
         #self.master.disable(self.frame_mode.winfo_children())
 
-        self.frame_mode.grid(row=1, column=1, columnspan=1, pady=(10, 10), padx=(20, 10))
+        self.frame_mode.grid(row=1, column=1, rowspan=2, columnspan=1, pady=(10, 10), padx=(20, 10))
 
         self.frame_interleave = LabelFrame(self)
 
@@ -236,14 +236,23 @@ class TaskGeneratorFrame(LabelFrame):
                text="Don't Interleave Qs Types",
                variable=self.intlerleave, 
                value=0)
-        self.intlerleave0Btn.grid(row=1, column=2, columnspan=1, sticky=W, pady=(21, 2), padx=(10, 10))
+        self.intlerleave0Btn.grid(row=1, column=2, columnspan=1, sticky=W, pady=(10, 2), padx=(10, 10))
         self.intlerleave1Btn = Radiobutton(self.frame_interleave, 
                text="Interleave Qs Types",
                variable=self.intlerleave, 
                value=1)
-        self.intlerleave1Btn.grid(row=2, column=2, columnspan=1, sticky=W, pady=(2, 21), padx=(10, 10))
+        self.intlerleave1Btn.grid(row=2, column=2, columnspan=1, sticky=W, pady=(2, 10), padx=(10, 10))
 
-        self.frame_interleave.grid(row=1, column=2, columnspan=1, pady=(10, 10), padx=(10, 10))
+        self.frame_interleave.grid(row=1, column=2, columnspan=1, pady=(10, 0), padx=(10, 10))
+
+
+        self.frame_amount = LabelFrame(self)
+        self.label_amount = Label(self.frame_amount, text="Num. of Skills:")
+        self.entry_amount = Entry(self.frame_amount, width=12)
+
+        self.label_amount.grid(row=2, column=1, columnspan=1, sticky=W, pady=(0, 1), padx=(1, 10))
+        self.entry_amount.grid(row=2, column=2, columnspan=1, pady=(1, 0), padx=(1, 10))
+        self.frame_amount.grid(row=2, column=2, columnspan=1, pady=(0, 10), padx=(10, 10))
 
         self.frame_tid = LabelFrame(self)
 
@@ -265,7 +274,7 @@ class TaskGeneratorFrame(LabelFrame):
         self.doCompleteBtn = Checkbutton(self.frame_tid, text='Completed',variable=self.doComplete, onvalue=True, offvalue=False)
         self.doCompleteBtn.grid(row=3, column=0)
 
-        self.frame_tid.grid(row=1, column=3, columnspan=1, pady=(10, 10), padx=(10, 20))
+        self.frame_tid.grid(row=1, column=3, columnspan=1, rowspan=2, pady=(10, 10), padx=(10, 20))
 
 
         self.start_btn = Button(self, text="Generate", command=self._Generate_btn_clicked)
@@ -280,9 +289,13 @@ class TaskGeneratorFrame(LabelFrame):
             tidNum.append(1)
         if self.doComplete.get():
             tidNum.append(2)
-        
         try:
-            self.master.interface.generate_task(self.mode.get(), self.intlerleave.get(), tidNum, self.master)
+            amount = self.entry_amount.get()
+            amount = int(amount)
+        except TypeError or ValueError:
+            tkm.showerror("Input error", "Invalid Amount")        
+        try:
+            self.master.interface.generate_task(self.mode.get(), self.intlerleave.get(), tidNum, amount, self.master)
         except TypeError or ValueError:
             tkm.showerror("Input error", "")
 
@@ -409,11 +422,11 @@ class Interface:
         except BaseException:
             raise InvalidLoginDetails(f'Email: {email}, Password: {"*" * len(password)}')
     
-    def generate_task(self, modeNum, interleave, tidNum, root=None):
+    def generate_task(self, modeNum, interleave, tidNum, amount, root=None):
         generator = taskGenerator(self.session)
-        res, err = generator.makeTask_V1(modeNum, interleave, tidNum)
+        res, err = generator.makeTask_V1(modeNum, interleave, tidNum, amount)
         if res:
-            print(f'Generated URL: {res}')
+            print(f'Generated URL: {res}\n')
         if err:
             print(err)
 
