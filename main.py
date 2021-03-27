@@ -58,6 +58,7 @@ class UserInterface(Tk):
         self.nf.grid(column=0, row=4, columnspan=2, padx=10, pady=(1,10))
 
         self.disable(self.mf.winfo_children())
+        self.disable(self.gf.winfo_children())
 
         self.interface = Interface()
 
@@ -67,14 +68,32 @@ class UserInterface(Tk):
                 child.configure(state='normal')
             except:
                 pass
+    def enablegrandchild(self, childList):
+        for child in childList:
+            try:
+                child.configure(state='normal')
+            except:
+                try:
+                    grandchildList = child.winfo_children()
+                    for grandchild in grandchildList:
+                        grandchild.configure(state='normal')
+                except:
+                    pass
+
     def disable(self, childList):
         for child in childList:
             try:
                 child.configure(state='disable')
             except:
-                grandchildList = child.winfo_children()
-                for grandchild in grandchildList:
-                    grandchild.configure(state='disable')
+                try:
+                    grandchildList = child.winfo_children()
+                    for grandchild in grandchildList:
+                        grandchild.configure(state='disable')
+                except:
+                    greatgrandchildList = grandchild.winfo_children()
+                    for greatgrandchild in greatgrandchildList:
+                        greatgrandchild.configure(state='disable')
+
 
 
 
@@ -108,6 +127,7 @@ class LoginFrame(LabelFrame):
         try:
             self.master.interface.test_login(email, password)
             self.master.enable(self.master.mf.winfo_children())
+            self.master.enablegrandchild(self.master.gf.winfo_children())
         except InvalidLoginDetails as e:
             print(e, file=sys.stderr)
             tkm.showerror("Login error", "Incorrect Email or Password")
@@ -177,17 +197,18 @@ class TaskGeneratorFrame(LabelFrame):
     def __init__(self, master, controller):
         super().__init__(master)
 
-        self.frame_questionNum = Frame (self)
+        self.frame_mode = LabelFrame(self)
+        self.frame_questionNum = Frame (self.frame_mode)
 
         self.mode = BooleanVar()
-        self.mode1Btn = Radiobutton(self, 
+        self.mode1Btn = Radiobutton(self.frame_mode, 
                 text="Set Amount of Qs to generate:",
                 variable=self.mode,               
                 value=1,
                 command=lambda: self.master.enable(self.frame_questionNum.winfo_children()))
         self.mode1Btn.grid(row=1, column=0, columnspan=1, sticky=W, pady=(5, 1), padx=(10, 10))
 
-        self.questionNum = StringVar(self)
+        self.questionNum = StringVar(self.frame_mode)
         choices = ['4','6','8','10','12','15','20','25','30','35']
         self.questionNum.set(choices[0])
         self.label_questionNum = Label(self.frame_questionNum, text="Num. of Qs:")
@@ -196,7 +217,7 @@ class TaskGeneratorFrame(LabelFrame):
         self.label_questionNum.grid(row=2, column=1, columnspan=1, sticky=W, pady=(0, 1), padx=(1, 10))
         self.menu_questionNum.grid(row=2, column=2, columnspan=1, pady=(1, 0), padx=(1, 10))
 
-        self.mode0Btn = Radiobutton(self, 
+        self.mode0Btn = Radiobutton(self.frame_mode, 
                text="Infinite          ",
                variable=self.mode, 
                value=0,
@@ -204,21 +225,25 @@ class TaskGeneratorFrame(LabelFrame):
         self.mode0Btn.grid(row=3, column=0, columnspan=1, sticky=W, pady=(0, 10), padx=(10, 10))
 
         self.frame_questionNum.grid(row=2, columnspan=2, pady=(1, 0))
-        self.master.disable(self.frame_questionNum.winfo_children())
+        #self.master.disable(self.frame_mode.winfo_children())
 
+        self.frame_mode.grid(row=1, column=1, columnspan=1, pady=(10, 10), padx=(20, 10))
+
+        self.frame_interleave = LabelFrame(self)
 
         self.intlerleave = BooleanVar()
-        self.intlerleave0Btn = Radiobutton(self, 
+        self.intlerleave0Btn = Radiobutton(self.frame_interleave, 
                text="Don't Interleave Qs Types",
                variable=self.intlerleave, 
                value=0)
-        self.intlerleave0Btn.grid(row=1, column=2, columnspan=1, sticky=W, pady=(10, 0), padx=(10, 10))
-        self.intlerleave1Btn = Radiobutton(self, 
+        self.intlerleave0Btn.grid(row=1, column=2, columnspan=1, sticky=W, pady=(21, 2), padx=(10, 10))
+        self.intlerleave1Btn = Radiobutton(self.frame_interleave, 
                text="Interleave Qs Types",
                variable=self.intlerleave, 
                value=1)
-        self.intlerleave1Btn.grid(row=2, column=2, columnspan=1, sticky=W, pady=(0, 10), padx=(10, 10))
+        self.intlerleave1Btn.grid(row=2, column=2, columnspan=1, sticky=W, pady=(2, 21), padx=(10, 10))
 
+        self.frame_interleave.grid(row=1, column=2, columnspan=1, pady=(10, 10), padx=(10, 10))
 
         self.frame_tid = LabelFrame(self)
 
@@ -240,11 +265,11 @@ class TaskGeneratorFrame(LabelFrame):
         self.doCompleteBtn = Checkbutton(self.frame_tid, text='Completed',variable=self.doComplete, onvalue=True, offvalue=False)
         self.doCompleteBtn.grid(row=3, column=0)
 
-        self.frame_tid.grid(row=1, column=3, rowspan=3)
+        self.frame_tid.grid(row=1, column=3, columnspan=1, pady=(10, 10), padx=(10, 20))
 
 
         self.start_btn = Button(self, text="Generate", command=self._Generate_btn_clicked)
-        self.start_btn.grid(columnspan=2, pady=(1, 10), padx=(10, 10))
+        self.start_btn.grid(column= 1, columnspan=3, pady=(1, 10), padx=(10, 10))
 
 
     def _Generate_btn_clicked(self):
