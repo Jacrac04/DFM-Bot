@@ -50,9 +50,12 @@ class UserInterface(Tk):
 
         self.of = OutputFrame(self, container)
         self.of.grid(column=1, row=1, rowspan=2, padx=10, pady=10)
+        
+        self.gf = TaskGeneratorFrame(self, container)
+        self.gf.grid(column=0, row=3, columnspan=2, padx=10, pady=10)
 
         self.nf = NotesFrame(self, container)
-        self.nf.grid(column=0, row=3, columnspan=2, padx=10, pady=(1,10))
+        self.nf.grid(column=0, row=4, columnspan=2, padx=10, pady=(1,10))
 
         self.disable(self.mf.winfo_children())
 
@@ -174,31 +177,76 @@ class TaskGeneratorFrame(LabelFrame):
     def __init__(self, master, controller):
         super().__init__(master)
 
-     
+        self.frame_questionNum = Frame (self)
+
         self.mode = BooleanVar()
-        self.mode0Btn = Radiobutton(self, 
-               text="",
-               variable=self.mode, 
-               value=0)
-        self.mode0Btn.grid(row=1, columnspan=2, sticky=W, pady=(10, 0), padx=(10, 10))
-
         self.mode1Btn = Radiobutton(self, 
-                    text="Manual Submit",
-                    variable=self.autoSubmit,               
-                    value=False)
-        self.mode1Btn.grid(row=4, columnspan=2, sticky=W, pady=(5, 10), padx=(10, 10))
+                text="Set Amount of Qs to generate:",
+                variable=self.mode,               
+                value=1,
+                command=lambda: self.master.enable(self.frame_questionNum.winfo_children()))
+        self.mode1Btn.grid(row=1, column=0, columnspan=1, sticky=W, pady=(5, 1), padx=(10, 10))
 
-        
+        self.questionNum = StringVar(self)
+        choices = ['4','6','8','10','12','15','20','25','30','35']
+        self.questionNum.set(choices[0])
+        self.label_questionNum = Label(self.frame_questionNum, text="Num. of Qs:")
+        self.menu_questionNum = OptionMenu(self.frame_questionNum, self.questionNum, *choices)
+
+        self.label_questionNum.grid(row=2, column=1, columnspan=1, sticky=W, pady=(0, 1), padx=(1, 10))
+        self.menu_questionNum.grid(row=2, column=2, columnspan=1, pady=(1, 0), padx=(1, 10))
+
+        self.mode0Btn = Radiobutton(self, 
+               text="Infinite          ",
+               variable=self.mode, 
+               value=0,
+                command=lambda: self.master.disable(self.frame_questionNum.winfo_children()))
+        self.mode0Btn.grid(row=3, column=0, columnspan=1, sticky=W, pady=(0, 10), padx=(10, 10))
+
+        self.frame_questionNum.grid(row=2, columnspan=2, pady=(1, 0))
+        self.master.disable(self.frame_questionNum.winfo_children())
+
+
+        self.intlerleave = BooleanVar()
+        self.intlerleave0Btn = Radiobutton(self, 
+               text="Don't Interleave Qs Types",
+               variable=self.intlerleave, 
+               value=0)
+        self.intlerleave0Btn.grid(row=1, column=2, columnspan=1, sticky=W, pady=(10, 0), padx=(10, 10))
+        self.intlerleave1Btn = Radiobutton(self, 
+               text="Interleave Qs Types",
+               variable=self.intlerleave, 
+               value=1)
+        self.intlerleave1Btn.grid(row=2, column=2, columnspan=1, sticky=W, pady=(0, 10), padx=(10, 10))
+
+
+        self.frame_tid = LabelFrame(self)
+
+        self.label_tid = Label(self.frame_tid, text='Include Questions That Are:')
+        self.label_tid.grid(row=0, column=0)
+
+        self.doUnseen = BooleanVar()
+        self.doStarted = BooleanVar()
+        self.doComplete = BooleanVar()
+
+        self.doUnseenBtn = Checkbutton(self.frame_tid, text='Unseen',variable=self.doUnseen, onvalue=1, offvalue=0)
+        self.doUnseenBtn.grid(row=1, column=0)
+        self.doUnseenBtn = Checkbutton(self.frame_tid, text='Started',variable=self.doStarted, onvalue=1, offvalue=0)
+        self.doUnseenBtn.grid(row=2, column=0)
+        self.doUnseenBtn = Checkbutton(self.frame_tid, text='Completed',variable=self.doComplete, onvalue=1, offvalue=0)
+        self.doUnseenBtn.grid(row=3, column=0)
+
+        self.frame_tid.grid(row=1, column=3, rowspan=3)
+
+
         self.start_btn = Button(self, text="Generate", command=self._Generate_btn_clicked)
         self.start_btn.grid(columnspan=2, pady=(1, 10), padx=(10, 10))
 
 
     def _Generate_btn_clicked(self):
-        self.url = None
-        self.totalQnum = 0
-        url = self.entry_url.get()
+        tidNum = []
         try:
-            self.master.interface.generate_task(self.mode.get(), self.master)
+            self.master.interface.generate_task(self.mode.get(), self.intlerleave.get(), tidNum, self.master)
         except TypeError or ValueError:
             tkm.showerror("Input error", "")
 
@@ -325,9 +373,9 @@ class Interface:
         except BaseException:
             raise InvalidLoginDetails(f'Email: {email}, Password: {"*" * len(password)}')
     
-    def generate_task():
+    def generate_task(self, modeNum, interleave, tidNum, root=None):
         generator = taskGenerator(self.session)
-        res, err = generator.makeTask_V1(modeNum=0, interleave=0, tidNum=0)
+        res, err = generator.makeTask_V1(modeNum, interleave, tidNum)
         if res:
             print(f'Generated URL: {res}')
         if err:
