@@ -29,7 +29,13 @@ class taskGenerator:
             if err:
                 return None, 'Error Generating Questions'
             keySkillsIDsList.extend(keySkillsIDs)
-        
+
+        for x in self.permid_blacklist:
+            try:
+                keySkillsIDsList.remove(x)
+            except ValueError:
+                continue
+
         fullURL = self.get_task_url_base + f'permid={str(keySkillsIDsList)[1:-1]}&interleave={interleave}&cmode={mode}'
         res = self.sesh.get(fullURL, allow_redirects=True)
         return res.url, False
