@@ -87,6 +87,8 @@ The repl site works however it is slower and you will have a better user expecie
 ## Bugs, Issues And Requests
 Please report any issue or bugs [here](https://github.com/Jacrac04/DFM-Bot/issues/new/choose)
 See the [open issues](https://github.com/Jacrac04/DFM-Bot/issues) for a list of proposed features (and known issues).
+### Known Issues
+* The delay is only between questions and does not actually increase the time taken answering a question.
 
 ## Contributing
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
