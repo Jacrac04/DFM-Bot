@@ -58,7 +58,7 @@ It was originally based of [AK163631's Answer Tool](https://github.com/AK163631/
     - This should look like `https://www.drfrostmaths.com/do-question.php?aaid=12345678`
     - make sure that there is nothing else like `qnum=5` in it.
 5. Select manual or auto submit.
-    - Auto submit lets you enter the amount of the questions for it to answer and it will go through and answer them for you. After clicking start, if you refresh your Dr forst page you should see questions being answered.
+    - Auto submit lets you enter the amount of the questions for it to answer and it will go through and answer them for you. You can also add a delay time between questions.  After clicking start, if you refresh your Dr forst page you should see questions being answered.
     - Manual submit will give you the answer for the currrent question and then you can enter it yourself. 
 6. Click start.
 
