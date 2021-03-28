@@ -189,7 +189,7 @@ class MainFrame(LabelFrame):
             else:
                 self.url = url
             self.master.interface.main_loop(self.url, self.totalQnum, self.autoSubmit.get(), self.master)
-        except TypeError or ValueError:
+        except ValueError or TypeError:
             tkm.showerror("Input error", "Invalid totalQnum")
         
 
@@ -290,12 +290,12 @@ class TaskGeneratorFrame(LabelFrame):
         if self.doComplete.get():
             tidNum.append(2)
         try:
-            amount = self.entry_amount.get()
-            amount = int(amount)
+            amountSkills = self.entry_amount.get()
+            amountSkills = int(amountSkills)
         except TypeError or ValueError:
-            tkm.showerror("Input error", "Invalid Amount")        
+            tkm.showerror("Input error", "Invalid Amount - Num of Skills ≈654 max")        
         try:
-            self.master.interface.generate_task(self.mode.get(), self.intlerleave.get(), tidNum, amount, self.master)
+            self.master.interface.generate_task(self.mode.get(), self.intlerleave.get(), tidNum, amountSkills, int(self.questionNum.get()), self.master)
         except TypeError or ValueError:
             tkm.showerror("Input error", "")
 
@@ -422,9 +422,9 @@ class Interface:
         except BaseException:
             raise InvalidLoginDetails(f'Email: {email}, Password: {"*" * len(password)}')
     
-    def generate_task(self, modeNum, interleave, tidNum, amount, root=None):
+    def generate_task(self, modeNum, interleave, tidNum, amountSkills, amountQuestions, root=None):
         generator = taskGenerator(self.session)
-        res, err = generator.makeTask_V1(modeNum, interleave, tidNum, amount)
+        res, err = generator.makeTask_V1(modeNum, interleave, tidNum, amountSkills, amountQuestions)
         if res:
             print(f'Generated URL: {res}\n')
         if err:
