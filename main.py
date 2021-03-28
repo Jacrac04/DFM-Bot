@@ -160,6 +160,13 @@ class MainFrame(LabelFrame):
         self.label_totalQnum.grid(row=2, column=1, columnspan=1, sticky=W, pady=(0, 1), padx=(1, 10))
         self.entry_totalQnum.grid(row=3, column=1, columnspan=1, pady=(1, 0), padx=(1, 10))
 
+        self.label_delay = Label(self.frame_totalQnum, text="Delay (seconds):")
+        self.entry_delay = Entry(self.frame_totalQnum)
+
+        self.label_delay.grid(row=4, column=1, columnspan=1, sticky=W, pady=(0, 1), padx=(1, 10))
+        self.entry_delay.grid(row=5, column=1, columnspan=1, pady=(1, 0), padx=(1, 10))
+
+
         self.frame_totalQnum.grid(row=3, columnspan=2, pady=(1, 0))
 
 
@@ -184,13 +191,15 @@ class MainFrame(LabelFrame):
             if self.autoSubmit.get():
                 self.totalQnum = self.entry_totalQnum.get()
                 self.totalQnum = int(self.totalQnum)
+                self.delay = self.entry_delay.get()
+                self.delay = int(self.delay)
             if len(url) == 8:
                 self.url = 'https://www.drfrostmaths.com/do-question.php?aaid=' + url
             else:
                 self.url = url
-            self.master.interface.main_loop(self.url, self.totalQnum, self.autoSubmit.get(), self.master)
-        except ValueError or TypeError:
-            tkm.showerror("Input error", "Invalid totalQnum")
+            self.master.interface.main_loop(self.url, self.totalQnum, self.delay, self.autoSubmit.get(), self.master)
+        except TypeError or ValueError:
+            tkm.showerror("Input error", "Invalid totalQnum or Delay")
         
 
 class TaskGeneratorFrame(LabelFrame):
@@ -306,7 +315,7 @@ class OutputFrame(LabelFrame):
     def __init__(self, master, controller):
         super().__init__(master)
 
-        self.textbox = Text(self, height=19, width=50)
+        self.textbox = Text(self, height=22, width=50)
         self.textbox.configure(state='disabled')
         self.textbox.grid(row=0, column=0)
 
@@ -370,7 +379,7 @@ class Interface:
     def __init__(self):
         self.session = Session()
 
-    def main_loop(self, url=None, totalQnum=0, autoSubmit = True, root=None):
+    def main_loop(self, url=None, totalQnum=0, delay=0, autoSubmit = True, root=None):
         handler = AnswerHandler(self.session)
         if url==None:
             print('Press ctrl-c to quit')
@@ -394,6 +403,8 @@ class Interface:
                         traceback.print_exc()
                         break
                     root.update()
+                    for time in range(0,delay*100,1):
+                        root.after(10, root.update())
                 print('Done')
 
             else:
