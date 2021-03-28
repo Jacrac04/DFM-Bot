@@ -185,7 +185,7 @@ class OutputFrame(LabelFrame):
     def __init__(self, master, controller):
         super().__init__(master)
 
-        self.textbox = Text(self, height=19, width=50)
+        self.textbox = Text(self, height=22, width=50)
         self.textbox.configure(state='disabled')
         self.textbox.grid(row=0, column=0)
 
