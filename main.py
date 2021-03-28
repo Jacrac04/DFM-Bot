@@ -163,19 +163,19 @@ class MainFrame(LabelFrame):
         self.url = None
         self.totalQnum = 0
         url = self.entry_url.get()
-        #try:
-        if self.autoSubmit.get():
-            self.totalQnum = self.entry_totalQnum.get()
-            self.totalQnum = int(self.totalQnum)
-            self.delay = self.entry_delay.get()
-            self.delay = int(self.delay)
-        if len(url) == 8:
-            self.url = 'https://www.drfrostmaths.com/do-question.php?aaid=' + url
-        else:
-            self.url = url
-        self.master.interface.main_loop(self.url, self.totalQnum, self.delay, self.autoSubmit.get(), self.master)
-        #except TypeError or ValueError:
-        #    tkm.showerror("Input error", "Invalid totalQnum or Delay")
+        try:
+            if self.autoSubmit.get():
+                self.totalQnum = self.entry_totalQnum.get()
+                self.totalQnum = int(self.totalQnum)
+                self.delay = self.entry_delay.get()
+                self.delay = int(self.delay)
+            if len(url) == 8:
+                self.url = 'https://www.drfrostmaths.com/do-question.php?aaid=' + url
+            else:
+                self.url = url
+            self.master.interface.main_loop(self.url, self.totalQnum, self.delay, self.autoSubmit.get(), self.master)
+        except TypeError or ValueError:
+            tkm.showerror("Input error", "Invalid totalQnum or Delay")
         
 
 
