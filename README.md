@@ -9,7 +9,7 @@
   <p align="center">
     A Bot for drfrostmaths.com
     <br />
-    <a href="https://repl.it/@Jacrac04/DFM-Bot#main.py">Try Online</a>
+    <a href="https://replit.com/@Jacrac04/DFM-Bot#main.py">Try Online</a>
     ·
     <a href="https://github.com/Jacrac04/DFM-Bot/issues">Report Bug</a>
     ·
@@ -69,7 +69,7 @@ I got banned after 300 questions. The only way to get your account un-banned is 
 
 
 ### Setup And Use For Repl
-1. Go to the [repl.it site](https://repl.it/@Jacrac04/DFM-Bot#main.py) for this project and click fork. It is important you create your own version as repl shares one instance between everyone, so people may be able to get your Dr Frost password. Once you have done this you can run it.
+1. Go to the [replit.com site](https://replit.com/@Jacrac04/DFM-Bot#main.py) for this project and click fork. It is important you create your own version as repl shares one instance between everyone, so people may be able to get your Dr Frost password. Once you have done this you can run it.
 2. Enter your login details - Ensure that your [Dr frost account](https://www.drfrostmaths.com/account.php) is not linked to google or another service. [(Check here)](https://www.drfrostmaths.com/account.php)
 3. Enter a question url or the AAID.
     - This should look like `https://www.drfrostmaths.com/do-question.php?aaid=12345678` or `12345678`
