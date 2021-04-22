@@ -53,6 +53,8 @@ class AnswerHandler:
                                  'desmos_line': self.answer_desmosLine,
                                  'ratio': self.answer_ratio,
                                  'ordered': self.answer_ordered}
+        self.current_answer = None
+        self.current_answer_data = None
 
 
     def find_answer(self, data: dict, type_: str):
@@ -76,6 +78,7 @@ class AnswerHandler:
         print(f'Request: {data}')
         print(f'Response: {response}')
 
+    #Old Way - Could get you banned
     @catch
     def answer_questions_V3(self, url: str, submit=True):
         try:
@@ -101,6 +104,7 @@ class AnswerHandler:
                 continue  # skips auto submit
 
             self.submit(result)
+    #Old Way - Could get you banned
     @catch
     def answer_question_V3(self, url: str, submit: bool):
         try:
@@ -128,7 +132,41 @@ class AnswerHandler:
 
         print(f'Answer: {self.beautify_Answer(answer)}\n')
         return True, False
+
+    @catch    
+    def answer_question_V4_part1():
+        try:
+            aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
+        except IndexError:
+            raise InvalidURLException(url)
+        page = self.sesh.get(url, headers=self.headers, verify=False).text
+        ansMethordType, data, type_ = Parser.parse_V2(page)
+
+        if ansMethordType == 1:
+            answer = self.find_answer_qid(data, type_)
+        elif ansMethordType == 2:
+            answer = self.find_answer_params(data, type_)
+
+        data['aaid'] = aaid
+
+        self.current_answer = answer
+        self.current_answer_data = data
+
+        return answer
+
+    def answer_question_V4_part2():
+        try:
+            result = self.answer_functions[type_](self.current_answer_data, self.current_answer)  # select appropriate function to process answer
+        except KeyError:
+            self.new_type(self.current_answer, type_)  # not implemented type
+            return #something
         
+        self.submit(result)
+
+        return #something
+
+
+
             
 
     def find_answer_qid(self, data: dict, type_: str):
