@@ -99,9 +99,6 @@ class UserInterface(Tk):
                     for greatgrandchild in greatgrandchildList:
                         greatgrandchild.configure(state='disable')
 
-    # def check_status_ui(self):
-    #     CURRENT_VERSION = 'v3.1.0'
-    #     boolToDisplay, (title, msg) = check_status(CURRENT_VERSION)
 
 
 
