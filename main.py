@@ -15,6 +15,7 @@ import tkinter.messagebox as tkm
 import sys
 
 CURRENT_VERSION = 'v3.1.1'
+ENABLE_STATUS_CHECK = True
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -63,7 +64,8 @@ class UserInterface(Tk):
         self.disable(self.mf.winfo_children())
         self.disable(self.gf.winfo_children())
 
-        check_status(CURRENT_VERSION)
+        if ENABLE_STATUS_CHECK:
+            check_status(CURRENT_VERSION)
 
         self.interface = Interface()
 
