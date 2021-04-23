@@ -151,14 +151,15 @@ class AnswerHandler:
 
         self.current_answer = answer
         self.current_answer_data = data
+        self.type_ = type_
 
         return answer
 
     def answer_question_V4_part2(self):
         try:
-            result = self.answer_functions[type_](self.current_answer_data, self.current_answer)  # select appropriate function to process answer
+            result = self.answer_functions[self.type_](self.current_answer_data, self.current_answer)  # select appropriate function to process answer
         except KeyError:
-            self.new_type(self.current_answer, type_)  # not implemented type
+            self.new_type(self.current_answer, self.type_)  # not implemented type
             return #something
         
         self.submit(result)
