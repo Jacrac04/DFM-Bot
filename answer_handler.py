@@ -134,7 +134,7 @@ class AnswerHandler:
         return True, False
 
     @catch    
-    def answer_question_V4_part1():
+    def answer_question_V4_part1(self, url: str):
         try:
             aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
         except IndexError:
@@ -154,7 +154,7 @@ class AnswerHandler:
 
         return answer
 
-    def answer_question_V4_part2():
+    def answer_question_V4_part2(self):
         try:
             result = self.answer_functions[type_](self.current_answer_data, self.current_answer)  # select appropriate function to process answer
         except KeyError:
@@ -163,7 +163,7 @@ class AnswerHandler:
         
         self.submit(result)
 
-        return #something
+        return True, False#something
 
 
 

@@ -186,6 +186,7 @@ class MainFrame(LabelFrame):
     def _start_btn_clicked(self):
         self.url = None
         self.totalQnum = 0
+        self.delay = 0
         url = self.entry_url.get()
         try:
             if self.autoSubmit.get():
@@ -381,6 +382,7 @@ class Interface:
 
     def main_loop(self, url=None, totalQnum=0, delay=0, autoSubmit = True, root=None):
         handler = AnswerHandler(self.session)
+        #Legacy
         if url==None:
             print('Press ctrl-c to quit')
             while True:
@@ -394,7 +396,7 @@ class Interface:
         else:
             if totalQnum > 0:
                 for q in range(1,totalQnum+1): #from 1 to toalt +1 as its q=1 when question_num =1
-                    res, err = handler.answer_question_V3(url, autoSubmit)
+                    res, err = handler.answer_question_V4_part1(url)
                     if res:
                         if err:
                             break
@@ -405,11 +407,14 @@ class Interface:
                     root.update()
                     for time in range(0,delay*100,1):
                         root.after(10, root.update())
+                    res, err = handler.answer_question_V4_part2()
+                    
                 print('Done')
 
             else:
-                res, err = handler.answer_question_V3(url, autoSubmit)
-                if res:
+                answer = handler.answer_question_V4_part1(url)
+                print(answer)
+                if answer:
                     pass
                 else:
                     print(f'Unexpected exception occurred: {err}', file=sys.stderr)
