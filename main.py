@@ -5,6 +5,8 @@ import sys
 from requests import Session
 from answer_handler import AnswerHandler
 from generateTask import taskGenerator
+from server_check import check_status
+
 import urllib3
 
 from tkinter import *
@@ -12,6 +14,7 @@ import tkinter.messagebox as tkm
 
 import sys
 
+CURRENT_VERSION = 'v3.1.1'
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -60,6 +63,8 @@ class UserInterface(Tk):
         self.disable(self.mf.winfo_children())
         self.disable(self.gf.winfo_children())
 
+        check_status(CURRENT_VERSION)
+
         self.interface = Interface()
 
     def enable(self, childList):
@@ -93,6 +98,10 @@ class UserInterface(Tk):
                     greatgrandchildList = grandchild.winfo_children()
                     for greatgrandchild in greatgrandchildList:
                         greatgrandchild.configure(state='disable')
+
+    # def check_status_ui(self):
+    #     CURRENT_VERSION = 'v3.1.0'
+    #     boolToDisplay, (title, msg) = check_status(CURRENT_VERSION)
 
 
 
