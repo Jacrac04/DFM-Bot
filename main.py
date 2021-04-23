@@ -160,7 +160,7 @@ class MainFrame(LabelFrame):
         self.label_totalQnum.grid(row=2, column=1, columnspan=1, sticky=W, pady=(0, 1), padx=(1, 10))
         self.entry_totalQnum.grid(row=3, column=1, columnspan=1, pady=(1, 0), padx=(1, 10))
 
-        self.label_delay = Label(self.frame_totalQnum, text="Delay (seconds):")
+        self.label_delay = Label(self.frame_totalQnum, text="Delay (seconds(ish)):")
         self.entry_delay = Entry(self.frame_totalQnum)
 
         self.label_delay.grid(row=4, column=1, columnspan=1, sticky=W, pady=(0, 1), padx=(1, 10))
@@ -186,6 +186,7 @@ class MainFrame(LabelFrame):
     def _start_btn_clicked(self):
         self.url = None
         self.totalQnum = 0
+        self.delay = 0
         url = self.entry_url.get()
         try:
             if self.autoSubmit.get():
@@ -379,8 +380,11 @@ class Interface:
     def __init__(self):
         self.session = Session()
 
+
+    #This despritly needs rewriting.
     def main_loop(self, url=None, totalQnum=0, delay=0, autoSubmit = True, root=None):
         handler = AnswerHandler(self.session)
+        #Legacy
         if url==None:
             print('Press ctrl-c to quit')
             while True:
@@ -394,22 +398,26 @@ class Interface:
         else:
             if totalQnum > 0:
                 for q in range(1,totalQnum+1): #from 1 to toalt +1 as its q=1 when question_num =1
-                    res, err = handler.answer_question_V3(url, autoSubmit)
-                    if res:
-                        if err:
-                            break
+                    answer = handler.answer_question_V4_part1(url)
+                    if answer:
+                        pass
                     else:
                         print(f'Unexpected exception occurred: {err}', file=sys.stderr)
                         traceback.print_exc()
                         break
+                    print(f'Answer:{answer}\nNow waiting')
                     root.update()
                     for time in range(0,delay*100,1):
                         root.after(10, root.update())
+                    print('Answered\n')
+                    res, err = handler.answer_question_V4_part2()
+                    
                 print('Done')
 
             else:
-                res, err = handler.answer_question_V3(url, autoSubmit)
-                if res:
+                answer = handler.answer_question_V4_part1(url)
+                print(answer)
+                if answer:
                     pass
                 else:
                     print(f'Unexpected exception occurred: {err}', file=sys.stderr)
