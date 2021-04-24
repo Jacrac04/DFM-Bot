@@ -228,7 +228,7 @@ class TaskGeneratorFrame(LabelFrame):
     def __init__(self, master, masterMaster):
         super().__init__(master)
 
-        self.masterMaster = masterMaster
+        #self.masterMaster = masterMaster
          
         self.frame_mode = LabelFrame(self)
         self.frame_questionNum = Frame (self.frame_mode)
@@ -328,7 +328,7 @@ class TaskGeneratorFrame(LabelFrame):
         except TypeError or ValueError:
             tkm.showerror("Input error", "Invalid Amount - Num of Skills ≈654 max")        
         try:
-            self.masterMaster.interface.generate_task(self.mode.get(), self.intlerleave.get(), tidNum, amountSkills, int(self.questionNum.get()), self.master)
+            self.master.master.interface.generate_task(self.mode.get(), self.intlerleave.get(), tidNum, amountSkills, int(self.questionNum.get()), self.master)
         except TypeError or ValueError:
             tkm.showerror("Input error", "")
 
