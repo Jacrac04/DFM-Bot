@@ -51,8 +51,10 @@ class UserInterface(Tk):
         self.of = OutputFrame(self, container)
         self.of.grid(column=1, row=1, rowspan=2, padx=10, pady=10)
         
-        self.gf = TaskGeneratorFrame(self, container)
+        self.gf = SubWindowManagerFrame(self)
         self.gf.grid(column=0, row=3, columnspan=2, padx=10, pady=10)
+
+
 
         self.nf = NotesFrame(self, container)
         self.nf.grid(column=0, row=4, columnspan=2, padx=10, pady=(1,10))
@@ -90,11 +92,30 @@ class UserInterface(Tk):
                     for grandchild in grandchildList:
                         grandchild.configure(state='disable')
                 except:
-                    greatgrandchildList = grandchild.winfo_children()
-                    for greatgrandchild in greatgrandchildList:
-                        greatgrandchild.configure(state='disable')
+                    try:
+                        greatgrandchildList = grandchild.winfo_children()
+                        for greatgrandchild in greatgrandchildList:
+                            greatgrandchild.configure(state='disable')
+                    except:
+                        greatgreatgrandchildList = greatgrandchild.winfo_children()
+                        for greatgreatgrandchild in greatgreatgrandchildList:
+                            greatgreatgrandchild.configure(state='disable')
 
 
+class SubWindowManagerFrame(LabelFrame):
+    def __init__(self, master):
+        super().__init__(master)
+        self.master = master
+        
+        self.taskGenBtn = Button(self, text="Task Generator", command=self.openTaskGenerator)
+        self.taskGenBtn.grid(column=1, row=1, padx=10, pady=10)
+
+    def openTaskGenerator(self):
+        self.taskGeneratorWindow= Toplevel(self.master)
+        self.gf = TaskGeneratorFrame(self.taskGeneratorWindow, self.master)
+        self.gf.grid(column=0, row=1, columnspan=2, padx=10, pady=10)
+        self.taskGenCloseBtn = Button(self.taskGeneratorWindow, text="Close", command=self.taskGeneratorWindow.destroy)
+        self.taskGenCloseBtn.grid(column=0, row=2, columnspan=2, padx=10, pady=10)
 
 
 
@@ -204,9 +225,11 @@ class MainFrame(LabelFrame):
         
 
 class TaskGeneratorFrame(LabelFrame):
-    def __init__(self, master, controller):
+    def __init__(self, master, masterMaster):
         super().__init__(master)
 
+        self.masterMaster = masterMaster
+         
         self.frame_mode = LabelFrame(self)
         self.frame_questionNum = Frame (self.frame_mode)
 
@@ -215,7 +238,7 @@ class TaskGeneratorFrame(LabelFrame):
                 text="Set Amount of Qs to generate:",
                 variable=self.mode,               
                 value=1,
-                command=lambda: self.master.enable(self.frame_questionNum.winfo_children()))
+                command=lambda: self.master.master.enable(self.frame_questionNum.winfo_children()))
         self.mode1Btn.grid(row=1, column=0, columnspan=1, sticky=W, pady=(5, 1), padx=(10, 10))
 
         self.questionNum = StringVar(self.frame_mode)
@@ -231,7 +254,7 @@ class TaskGeneratorFrame(LabelFrame):
                text="Infinite          ",
                variable=self.mode, 
                value=0,
-                command=lambda: self.master.disable(self.frame_questionNum.winfo_children()))
+                command=lambda: self.master.master.disable(self.frame_questionNum.winfo_children()))
         self.mode0Btn.grid(row=3, column=0, columnspan=1, sticky=W, pady=(0, 10), padx=(10, 10))
 
         self.frame_questionNum.grid(row=2, columnspan=2, pady=(1, 0))
@@ -305,7 +328,7 @@ class TaskGeneratorFrame(LabelFrame):
         except TypeError or ValueError:
             tkm.showerror("Input error", "Invalid Amount - Num of Skills ≈654 max")        
         try:
-            self.master.interface.generate_task(self.mode.get(), self.intlerleave.get(), tidNum, amountSkills, int(self.questionNum.get()), self.master)
+            self.masterMaster.interface.generate_task(self.mode.get(), self.intlerleave.get(), tidNum, amountSkills, int(self.questionNum.get()), self.master)
         except TypeError or ValueError:
             tkm.showerror("Input error", "")
 
