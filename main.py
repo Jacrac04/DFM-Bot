@@ -5,6 +5,8 @@ import sys
 from requests import Session
 from answer_handler import AnswerHandler
 from generateTask import taskGenerator
+from server_check import check_status
+
 import urllib3
 from random import uniform
 
@@ -13,6 +15,8 @@ import tkinter.messagebox as tkm
 
 import sys
 
+CURRENT_VERSION = 'v3.1.1'
+ENABLE_STATUS_CHECK = True
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -62,6 +66,9 @@ class UserInterface(Tk):
 
         self.disable(self.mf.winfo_children())
         self.disable(self.gf.winfo_children())
+
+        if ENABLE_STATUS_CHECK:
+            check_status(CURRENT_VERSION)
 
         self.interface = Interface()
 
@@ -120,6 +127,7 @@ class SubWindowManagerFrame(LabelFrame):
         self.gf.grid(column=0, row=1, columnspan=2, padx=10, pady=10)
         self.btn_taskGenClose = Button(self.taskGeneratorWindow, text="Close", command=self.taskGeneratorWindow.destroy)
         self.btn_taskGenClose.grid(column=0, row=2, columnspan=2, padx=10, pady=10)
+
 
 
 
