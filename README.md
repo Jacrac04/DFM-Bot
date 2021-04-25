@@ -119,6 +119,7 @@ Contributions are what make the open source community such an amazing place to b
 - [x] Add More Answer Functions
 - [X] Auto skill selectors (maybe)
 - [x] Add images to `README.md`
+- [ ] Fix sample space answer
 
 ## Contact Me 
 To contact me you can make an [issue](https://github.com/Jacrac04/DFM-Bot/issues/new/choose) using the Help Wanted or Question template.
