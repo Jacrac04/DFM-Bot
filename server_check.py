@@ -6,7 +6,7 @@ def check_status(CURRENT_VERSION):
     resp = requests.get('https://raw.githubusercontent.com/Jacrac04/DFM-Bot/develop/status.txt')
     version, status, msg = resp.text.split(', ')
     if version != CURRENT_VERSION:
-        tkm.showwarning("Warning",f'There is a new version, {version}. Updating is recommened as it can cause you to get banned from DFM if you dont. Updates availbile from github.com/Jacrac04/DFM-Bot/releases')
+        tkm.showwarning("Warning",f'There is a new version, {version}. The current version is {CURRENT_VERSION}. Updating is recommened as it can cause you to get banned from DFM if you dont. Updates availbile from github.com/Jacrac04/DFM-Bot/releases')
     if status == 'Normal':
         if msg != 'None':
             tkm.showinfo("Information", msg)
