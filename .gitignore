@@ -1,6 +1,6 @@
 answer_handler_dev.py
 .venv/*
-.vscode/settings.json
+.vscode/*
 __pycache__/*
 UI.py
 Tests.py
