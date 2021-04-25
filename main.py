@@ -15,7 +15,7 @@ import tkinter.messagebox as tkm
 
 import sys
 
-CURRENT_VERSION = 'v3.1.1'
+CURRENT_VERSION = 'v4.0.0alpha1'
 ENABLE_STATUS_CHECK = True
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
