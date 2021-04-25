@@ -107,15 +107,18 @@ class SubWindowManagerFrame(LabelFrame):
         super().__init__(master)
         self.master = master
         
-        self.taskGenBtn = Button(self, text="Task Generator", command=self.openTaskGenerator)
-        self.taskGenBtn.grid(column=1, row=1, padx=10, pady=10)
+        self.label_subWin = Label(self, text="Advanced Functions:")
+        self.label_subWin.grid(column=0, row=1, padx=10, pady=10)
+
+        self.btn_taskGen = Button(self, text="Task Generator", command=self.openTaskGenerator)
+        self.btn_taskGen.grid(column=1, row=1, padx=10, pady=10)
 
     def openTaskGenerator(self):
         self.taskGeneratorWindow= Toplevel(self.master)
         self.gf = TaskGeneratorFrame(self.taskGeneratorWindow, self.master)
         self.gf.grid(column=0, row=1, columnspan=2, padx=10, pady=10)
-        self.taskGenCloseBtn = Button(self.taskGeneratorWindow, text="Close", command=self.taskGeneratorWindow.destroy)
-        self.taskGenCloseBtn.grid(column=0, row=2, columnspan=2, padx=10, pady=10)
+        self.btn_taskGenClose = Button(self.taskGeneratorWindow, text="Close", command=self.taskGeneratorWindow.destroy)
+        self.btn_taskGenClose.grid(column=0, row=2, columnspan=2, padx=10, pady=10)
 
 
 
