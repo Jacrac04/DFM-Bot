@@ -501,12 +501,12 @@ class Interface:
                                  ' Chrome/87.0.4280.141 Safari/537.36'}
         data = {'login-email': email, 'login-password': password}
 
-        self.session.post(login_url, headers=headers, data=data, verify=False)
+        self.session.post(login_url, headers=headers, data=data)
         try:
             """
             verifying user is authenticated by tests if user can load the times tables
             """
-            res = self.session.get('https://www.drfrostmaths.com/homework/process-starttimestables.php', verify=False)
+            res = self.session.get('https://www.drfrostmaths.com/homework/process-starttimestables.php')
             json.loads(res.text)
             
             

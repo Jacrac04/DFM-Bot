@@ -110,7 +110,7 @@ class AnswerHandler:
             aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
         except IndexError:
             raise InvalidURLException(url)
-        page = self.sesh.get(url, headers=self.headers, verify=False).text
+        page = self.sesh.get(url, headers=self.headers).text
         ansMethordType, data, type_ = Parser.parse_V2(page)
 
         if ansMethordType == 1:
@@ -167,7 +167,7 @@ class AnswerHandler:
 
     def submit(self, data: dict):
         try:
-            r = self.sesh.post(self.process_ans_url, headers=self.headers, data=data, timeout=3, verify=False)
+            r = self.sesh.post(self.process_ans_url, headers=self.headers, data=data, timeout=3)
         except BaseException:
             return False
         
