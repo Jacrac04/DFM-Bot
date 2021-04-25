@@ -6,6 +6,7 @@ from requests import Session
 from answer_handler import AnswerHandler
 from generateTask import taskGenerator
 import urllib3
+from random import uniform
 
 from tkinter import *
 import tkinter.messagebox as tkm
@@ -184,11 +185,15 @@ class MainFrame(LabelFrame):
         self.label_totalQnum.grid(row=2, column=1, columnspan=1, sticky=W, pady=(0, 1), padx=(1, 10))
         self.entry_totalQnum.grid(row=3, column=1, columnspan=1, pady=(1, 0), padx=(1, 10))
 
-        self.label_delay = Label(self.frame_totalQnum, text="Delay (seconds(ish)):")
-        self.entry_delay = Entry(self.frame_totalQnum)
+        self.label_minDelay = Label(self.frame_totalQnum, text="Min Delay (seconds(ish)):")
+        self.entry_minDelay = Entry(self.frame_totalQnum)
+        self.label_maxDelay = Label(self.frame_totalQnum, text="Max Delay (seconds(ish)):")
+        self.entry_maxDelay = Entry(self.frame_totalQnum)
 
-        self.label_delay.grid(row=4, column=1, columnspan=1, sticky=W, pady=(0, 1), padx=(1, 10))
-        self.entry_delay.grid(row=5, column=1, columnspan=1, pady=(1, 0), padx=(1, 10))
+        self.label_minDelay.grid(row=4, column=1, columnspan=1, sticky=W, pady=(0, 1), padx=(1, 10))
+        self.entry_minDelay.grid(row=5, column=1, columnspan=1, pady=(1, 0), padx=(1, 10))
+        self.label_maxDelay.grid(row=6, column=1, columnspan=1, sticky=W, pady=(0, 1), padx=(1, 10))
+        self.entry_maxDelay.grid(row=7, column=1, columnspan=1, pady=(1, 0), padx=(1, 10))
 
 
         self.frame_totalQnum.grid(row=3, columnspan=2, pady=(1, 0))
@@ -210,19 +215,21 @@ class MainFrame(LabelFrame):
     def _start_btn_clicked(self):
         self.url = None
         self.totalQnum = 0
-        self.delay = 0
+        self.minDelay = 0
         url = self.entry_url.get()
         try:
             if self.autoSubmit.get():
                 self.totalQnum = self.entry_totalQnum.get()
                 self.totalQnum = int(self.totalQnum)
-                self.delay = self.entry_delay.get()
-                self.delay = int(self.delay)
+                self.minDelay = self.entry_minDelay.get()
+                self.minDelay = float(self.minDelay)
+                self.maxDelay = self.entry_maxDelay.get()
+                self.maxDelay = float(self.maxDelay)
             if len(url) == 8:
                 self.url = 'https://www.drfrostmaths.com/do-question.php?aaid=' + url
             else:
                 self.url = url
-            self.master.interface.main_loop(self.url, self.totalQnum, self.delay, self.autoSubmit.get(), self.master)
+            self.master.interface.main_loop(self.url, self.totalQnum, self.minDelay, self.maxDelay, self.autoSubmit.get(), self.master)
         except TypeError or ValueError:
             tkm.showerror("Input error", "Invalid totalQnum or Delay")
         
@@ -408,7 +415,7 @@ class Interface:
 
 
     #This despritly needs rewriting.
-    def main_loop(self, url=None, totalQnum=0, delay=0, autoSubmit = True, root=None):
+    def main_loop(self, url=None, totalQnum=0, minDelay=0, maxDelay=0, autoSubmit = True, root=None):
         handler = AnswerHandler(self.session)
         #Legacy
         if url==None:
@@ -432,7 +439,9 @@ class Interface:
                         traceback.print_exc()
                         break
                     print(f'Answer:{answer}\nNow waiting')
+
                     root.update()
+                    delay = int(uniform(minDelay, maxDelay))
                     for time in range(0,delay*100,1):
                         root.after(10, root.update())
                     print('Answered\n')
