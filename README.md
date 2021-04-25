@@ -68,7 +68,7 @@ I got banned after 300 questions. The only way to get your account un-banned is 
     - This should look like `https://www.drfrostmaths.com/do-question.php?aaid=12345678` or `12345678`
     - make sure that there is nothing else like `qnum=5` in it.
 6. Select manual or auto submit.
-    - Auto submit lets you enter the amount of the questions for it to answer and it will go through and answer them for you. After clicking start, if you refresh your Dr forst page you should see questions being answered.
+    - Auto submit lets you enter the amount of the questions for it to answer and it will go through and answer them for you. You can enter a min and max value for delay and it will pick a random delay between them. After clicking start, if you refresh your Dr forst page you should see questions being answered.
     - Manual submit will give you the answer for the currrent question and then you can enter it yourself. 
 7. Click start.
 
@@ -80,7 +80,7 @@ I got banned after 300 questions. The only way to get your account un-banned is 
     - This should look like `https://www.drfrostmaths.com/do-question.php?aaid=12345678` or `12345678`
     - make sure that there is nothing else like `qnum=5` in it.
 4. Select manual or auto submit.
-    - Auto submit lets you enter the amount of the questions for it to answer and it will go through and answer them for you. After clicking start, if you refresh your Dr forst page you should see questions being answered.
+    - Auto submit lets you enter the amount of the questions for it to answer and it will go through and answer them for you. You can enter a min and max value for delay and it will pick a random delay between them. After clicking start, if you refresh your Dr forst page you should see questions being answered.
     - Manual submit will give you the answer for the currrent question and then you can enter it yourself. 
 5. Click start.
 
