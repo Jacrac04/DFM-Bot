@@ -387,7 +387,7 @@ class OutputFrame(LabelFrame):
     def __init__(self, master, controller):
         super().__init__(master)
 
-        self.textbox = Text(self, height=22, width=50)
+        self.textbox = Text(self, height=24, width=50)
         self.textbox.configure(state='disabled')
         self.textbox.grid(row=0, column=0)
 
@@ -478,7 +478,7 @@ class Interface:
                         print(f'Unexpected exception occurred: {err}', file=sys.stderr)
                         traceback.print_exc()
                         break
-                    print(f'Answer:{answer}\nNow waiting')
+                    print(f'Answer:{answer}\nNow waiting for delay')
 
                     root.update()
                     delay = int(uniform(minDelay, maxDelay))
