@@ -224,6 +224,23 @@ class MainFrame(LabelFrame):
                 if not answer: 
                     return False
         return True
+    
+    def checkQnum(self, qnum):
+        qnum = int(qnum)
+        if not self.shownBefore:
+            if qnum > 5: # Prob here
+                answer = askyesno(title='Warning',
+                    message=f'You can get banned for over 300 questions completed but the warning appears at 100. Current qnum: {qnum}\nDo you want to continue?')
+                if not answer: 
+                        return False
+                self.shownBefore = True
+        if qnum > 7:
+            answer = askyesno(title='Critical Warning',
+                message=f'You WILL BE banned for over 300 questions completed. Current qnum: {qnum}\nDo you want to continue?')
+            if not answer: 
+                    return False
+        print('here')
+        return True
 
     def _start_btn_clicked(self, ):
         self.url = None
@@ -245,7 +262,8 @@ class MainFrame(LabelFrame):
                 self.url = 'https://www.drfrostmaths.com/do-question.php?aaid=' + url
             else:
                 self.url = url
-            self.master.interface.main_loop(self.url, self.totalQnum, self.minDelay, self.maxDelay, self.autoSubmit.get(), self.master)
+            self.shownBefore = False
+            self.master.interface.main_loop(self.url, self.totalQnum, self.minDelay, self.maxDelay, self.autoSubmit.get(), self.master, self)
         except TypeError or ValueError:
             tkm.showerror("Input error", "Invalid totalQnum or Delay")
         
@@ -431,7 +449,7 @@ class Interface:
 
 
     #This despritly needs rewriting.
-    def main_loop(self, url=None, totalQnum=0, minDelay=0, maxDelay=0, autoSubmit = True, root=None):
+    def main_loop(self, url=None, totalQnum=0, minDelay=0, maxDelay=0, autoSubmit = True, root=None, subMain=None):
         handler = AnswerHandler(self.session)
         #Legacy
         if url==None:
@@ -447,7 +465,10 @@ class Interface:
         else:
             if totalQnum > 0:
                 for q in range(1,totalQnum+1): #from 1 to toalt +1 as its q=1 when question_num =1
-                    answer = handler.answer_question_V4_part1(url)
+                    answer, qnum = handler.answer_question_V4_part1(url)
+                    checkRes = subMain.checkQnum(qnum)
+                    if not checkRes:
+                        break
                     if answer:
                         pass
                     else:
@@ -466,8 +487,8 @@ class Interface:
                 print('Done')
 
             else:
-                answer = handler.answer_question_V4_part1(url)
-                print(answer)
+                answer, qnum = handler.answer_question_V4_part1(url)
+                print(f'Question {qnum}: {answer}')
                 if answer:
                     pass
                 else:
