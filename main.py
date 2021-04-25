@@ -237,8 +237,6 @@ class MainFrame(LabelFrame):
 class TaskGeneratorFrame(LabelFrame):
     def __init__(self, master, masterMaster):
         super().__init__(master)
-
-        #self.masterMaster = masterMaster
          
         self.frame_mode = LabelFrame(self)
         self.frame_questionNum = Frame (self.frame_mode)
@@ -268,7 +266,6 @@ class TaskGeneratorFrame(LabelFrame):
         self.mode0Btn.grid(row=3, column=0, columnspan=1, sticky=W, pady=(0, 10), padx=(10, 10))
 
         self.frame_questionNum.grid(row=2, columnspan=2, pady=(1, 0))
-        #self.master.disable(self.frame_mode.winfo_children())
 
         self.frame_mode.grid(row=1, column=1, rowspan=2, columnspan=1, pady=(10, 10), padx=(20, 10))
 
@@ -391,7 +388,6 @@ class HelpWindow(Toplevel):
         self.btn_quit.grid(column=0)
 
 
-       
 
 
 
