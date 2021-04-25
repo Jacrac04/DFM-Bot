@@ -45,11 +45,17 @@
 This is a Bot for [drfrostmaths.com](drfrostmaths.com). If you like this please Star it on Github, it really helps, thanks.
 It was originally based of [AK163631's Answer Tool](https://github.com/AK163631/DFM-Answer-Tool). This is for educational purposes only.
 
-### Warning: Dr Frost Will Ban You
-<b> Update: </b>
-I got banned on a different account after doing 10 questions. I beilive that it bans based on time now. I recommend not using the bot.
+### Version 4 Update!
+New Features:
+- Delay - You can add a dealy wehn answering questions.
+- Warnings - If you try to do something known to get you banned, it will warn you.
+- Task Generator - Generate Question lists
+- Update Checker - This can be disabled by changing `ENABLE_STATUS_CHECK = True` to `ENABLE_STATUS_CHECK = False` in `main.py`
 
-I got banned after 300 questions. The only way to get your account un-banned is to get your teacher to contact Dr Frost. Because my account is banned I will no longer be able to test this. If you do 300 questions on one aaid/link or in one go using auto submit or manual submit or by yourself without a bot you will get banned. I believe Dr Frost does not have a proper anti-cheat they just use question number as a makeshift anti-cheat.
+Other Changes:
+- Changed file layout
+
+
 
 
 ![Image of Interface](https://github.com/Jacrac04/DFM-Bot/blob/master/images/Interface.JPG)
@@ -66,7 +72,7 @@ I got banned after 300 questions. The only way to get your account un-banned is 
     - This should look like `https://www.drfrostmaths.com/do-question.php?aaid=12345678` or `12345678`
     - make sure that there is nothing else like `qnum=5` in it.
 6. Select manual or auto submit.
-    - Auto submit lets you enter the amount of the questions for it to answer and it will go through and answer them for you. After clicking start, if you refresh your Dr forst page you should see questions being answered.
+    - Auto submit lets you enter the amount of the questions for it to answer and it will go through and answer them for you. You can enter a min and max value for delay and it will pick a random delay between them. After clicking start, if you refresh your Dr forst page you should see questions being answered.
     - Manual submit will give you the answer for the currrent question and then you can enter it yourself. 
 7. Click start.
 
@@ -78,7 +84,7 @@ I got banned after 300 questions. The only way to get your account un-banned is 
     - This should look like `https://www.drfrostmaths.com/do-question.php?aaid=12345678` or `12345678`
     - make sure that there is nothing else like `qnum=5` in it.
 4. Select manual or auto submit.
-    - Auto submit lets you enter the amount of the questions for it to answer and it will go through and answer them for you. After clicking start, if you refresh your Dr forst page you should see questions being answered.
+    - Auto submit lets you enter the amount of the questions for it to answer and it will go through and answer them for you. You can enter a min and max value for delay and it will pick a random delay between them. After clicking start, if you refresh your Dr forst page you should see questions being answered.
     - Manual submit will give you the answer for the currrent question and then you can enter it yourself. 
 5. Click start.
 
@@ -106,14 +112,14 @@ Contributions are what make the open source community such an amazing place to b
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## Todo
+## Todo 
 
 - [x] Add Executable
-- [x] Finish Testing
 - [x] Add UI
 - [x] Add More Answer Functions
-- [ ] Auto skill selectors (maybe)
+- [X] Auto skill selectors (maybe)
 - [x] Add images to `README.md`
+- [ ] Fix sample space answer
 
 ## Contact Me 
 To contact me you can make an [issue](https://github.com/Jacrac04/DFM-Bot/issues/new/choose) using the Help Wanted or Question template.

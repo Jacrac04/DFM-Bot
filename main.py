@@ -1,27 +1,31 @@
-import json
 import traceback
 import sys
+import json
+from random import uniform
 
-from requests import Session
-from answer_handler import AnswerHandler
 import urllib3
+from requests import Session
 
 from tkinter import *
 import tkinter.messagebox as tkm
+from tkinter.messagebox import askyesno
 
-import sys
+from src.answer_handler import AnswerHandler
+from src.generateTask import taskGenerator
+from ServerStatus.server_check import check_status
 
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+CURRENT_VERSION = 'v4.0.0'
+ENABLE_STATUS_CHECK = True
 
 
 class IORedirector(object):
-    '''A general class for redirecting I/O to this Text widget.'''
+    #A general class for redirecting I/O to this Text widget.
     def __init__(self,text_area):
         self.text_area = text_area
 
 class StdoutRedirector(IORedirector):
-    '''A class for redirecting stdout to this Text widget.'''
+    #A class for redirecting stdout to this Text widget.
     def write(self,text):
         self.text_area.configure(state='normal')
         self.text_area.insert(END, text)
@@ -49,11 +53,20 @@ class UserInterface(Tk):
 
         self.of = OutputFrame(self, container)
         self.of.grid(column=1, row=1, rowspan=2, padx=10, pady=10)
+        
+        self.gf = SubWindowManagerFrame(self)
+        self.gf.grid(column=0, row=3, columnspan=2, padx=10, pady=10)
+
+
 
         self.nf = NotesFrame(self, container)
-        self.nf.grid(column=0, row=3, columnspan=2, padx=10, pady=(1,10))
+        self.nf.grid(column=0, row=4, columnspan=2, padx=10, pady=(1,10))
 
         self.disable(self.mf.winfo_children())
+        self.disable(self.gf.winfo_children())
+
+        if ENABLE_STATUS_CHECK:
+            check_status(CURRENT_VERSION)
 
         self.interface = Interface()
 
@@ -63,14 +76,55 @@ class UserInterface(Tk):
                 child.configure(state='normal')
             except:
                 pass
+    def enablegrandchild(self, childList):
+        for child in childList:
+            try:
+                child.configure(state='normal')
+            except:
+                try:
+                    grandchildList = child.winfo_children()
+                    for grandchild in grandchildList:
+                        grandchild.configure(state='normal')
+                except:
+                    pass
+
     def disable(self, childList):
         for child in childList:
             try:
                 child.configure(state='disable')
             except:
-                grandchildList = child.winfo_children()
-                for grandchild in grandchildList:
-                    grandchild.configure(state='disable')
+                try:
+                    grandchildList = child.winfo_children()
+                    for grandchild in grandchildList:
+                        grandchild.configure(state='disable')
+                except:
+                    try:
+                        greatgrandchildList = grandchild.winfo_children()
+                        for greatgrandchild in greatgrandchildList:
+                            greatgrandchild.configure(state='disable')
+                    except:
+                        greatgreatgrandchildList = greatgrandchild.winfo_children()
+                        for greatgreatgrandchild in greatgreatgrandchildList:
+                            greatgreatgrandchild.configure(state='disable')
+
+
+class SubWindowManagerFrame(LabelFrame):
+    def __init__(self, master):
+        super().__init__(master)
+        self.master = master
+        
+        self.label_subWin = Label(self, text="Advanced Functions:")
+        self.label_subWin.grid(column=0, row=1, padx=10, pady=10)
+
+        self.btn_taskGen = Button(self, text="Task Generator", command=self.openTaskGenerator)
+        self.btn_taskGen.grid(column=1, row=1, padx=10, pady=10)
+
+    def openTaskGenerator(self):
+        self.taskGeneratorWindow= Toplevel(self.master)
+        self.gf = TaskGeneratorFrame(self.taskGeneratorWindow, self.master)
+        self.gf.grid(column=0, row=1, columnspan=2, padx=10, pady=10)
+        self.btn_taskGenClose = Button(self.taskGeneratorWindow, text="Close", command=self.taskGeneratorWindow.destroy)
+        self.btn_taskGenClose.grid(column=0, row=2, columnspan=2, padx=10, pady=10)
 
 
 
@@ -104,6 +158,7 @@ class LoginFrame(LabelFrame):
         try:
             self.master.interface.test_login(email, password)
             self.master.enable(self.master.mf.winfo_children())
+            self.master.enablegrandchild(self.master.gf.winfo_children())
         except InvalidLoginDetails as e:
             print(e, file=sys.stderr)
             tkm.showerror("Login error", "Incorrect Email or Password")
@@ -122,12 +177,12 @@ class MainFrame(LabelFrame):
         self.entry_url.grid(row=0, column=1, pady=(10, 1), padx=(1, 10))
         
         self.autoSubmit = BooleanVar()
-        self.autoSubBtn = Radiobutton(self, 
+        self.btn_autoSub = Radiobutton(self, 
                text="Auto Submit:",
                variable=self.autoSubmit, 
                value=True,
                 command=lambda:self.master.enable(self.frame_totalQnum.winfo_children()))
-        self.autoSubBtn.grid(row=1, columnspan=2, sticky=W, pady=(10, 0), padx=(10, 10))
+        self.btn_autoSub.grid(row=1, columnspan=2, sticky=W, pady=(10, 0), padx=(10, 10))
 
 
         self.label_totalQnum = Label(self.frame_totalQnum, text="Num. of Qs to Answer")
@@ -136,38 +191,191 @@ class MainFrame(LabelFrame):
         self.label_totalQnum.grid(row=2, column=1, columnspan=1, sticky=W, pady=(0, 1), padx=(1, 10))
         self.entry_totalQnum.grid(row=3, column=1, columnspan=1, pady=(1, 0), padx=(1, 10))
 
+        self.label_minDelay = Label(self.frame_totalQnum, text="Min Delay (seconds(ish)):")
+        self.entry_minDelay = Entry(self.frame_totalQnum)
+        self.label_maxDelay = Label(self.frame_totalQnum, text="Max Delay (seconds(ish)):")
+        self.entry_maxDelay = Entry(self.frame_totalQnum)
+
+        self.label_minDelay.grid(row=4, column=1, columnspan=1, sticky=W, pady=(0, 1), padx=(1, 10))
+        self.entry_minDelay.grid(row=5, column=1, columnspan=1, pady=(1, 0), padx=(1, 10))
+        self.label_maxDelay.grid(row=6, column=1, columnspan=1, sticky=W, pady=(0, 1), padx=(1, 10))
+        self.entry_maxDelay.grid(row=7, column=1, columnspan=1, pady=(1, 0), padx=(1, 10))
+
+
         self.frame_totalQnum.grid(row=3, columnspan=2, pady=(1, 0))
 
 
-        self.manSubBtn = Radiobutton(self, 
+        self.btn_manSub = Radiobutton(self, 
                     text="Manual Submit",
                     variable=self.autoSubmit,               
                     value=False,
                     command=lambda: self.master.disable(self.frame_totalQnum.winfo_children()))
-        self.manSubBtn.grid(row=4, columnspan=2, sticky=W, pady=(5, 10), padx=(10, 10))
+        self.btn_manSub.grid(row=4, columnspan=2, sticky=W, pady=(5, 10), padx=(10, 10))
 
         
         self.start_btn = Button(self, text="Start", command=self._start_btn_clicked)
         self.start_btn.grid(columnspan=2, pady=(1, 10), padx=(10, 10))
 
-   
+    @staticmethod
+    def checkDelay(min, max):
+        if min < 3:
+            answer = askyesno(title='Confirmation',
+                message='By having a short delay you could get banned, This has only been tested with delays greater than 5. \nDo you want to continue?')
+            if not answer: 
+                    return False
+        if min==max:
+                answer = askyesno(title='Confirmation',
+                message='By having the same min and max there is no varriance, you COULD BE banned. \nDo you want to continue?')
+                if not answer: 
+                    return False
+        return True
+    
+    def checkQnum(self, qnum):
+        qnum = int(qnum)
+        if not self.shownBefore:
+            if qnum > 98: 
+                answer = askyesno(title='Warning',
+                    message=f'You can get banned for over 300 questions completed but the warning appears at 100. Current qnum: {qnum}\nDo you want to continue?')
+                if not answer: 
+                        return False
+                self.shownBefore = True
+        if qnum > 290:
+            answer = askyesno(title='Critical Warning',
+                message=f'You WILL BE banned for over 300 questions completed. Current qnum: {qnum}\nDo you want to continue?')
+            if not answer: 
+                    return False
+        return True
 
-    def _start_btn_clicked(self):
+    def _start_btn_clicked(self, ):
         self.url = None
         self.totalQnum = 0
+        self.minDelay = 0
         url = self.entry_url.get()
         try:
             if self.autoSubmit.get():
                 self.totalQnum = self.entry_totalQnum.get()
                 self.totalQnum = int(self.totalQnum)
+                self.minDelay = self.entry_minDelay.get()
+                self.minDelay = float(self.minDelay)
+                self.maxDelay = self.entry_maxDelay.get()
+                self.maxDelay = float(self.maxDelay)
+                confResp = self.checkDelay(self.minDelay, self.maxDelay)
+                if not confResp:
+                    raise TypeError
             if len(url) == 8:
                 self.url = 'https://www.drfrostmaths.com/do-question.php?aaid=' + url
             else:
                 self.url = url
-            self.master.interface.main_loop(self.url, self.totalQnum, self.autoSubmit.get(), self.master)
-        except TypeError or ValueError:
-            tkm.showerror("Input error", "Invalid totalQnum")
+            self.shownBefore = False
+            self.master.interface.main_loop(self.url, self.totalQnum, self.minDelay, self.maxDelay, self.autoSubmit.get(), self.master, self)
+        except (TypeError, ValueError):
+            tkm.showerror("Input error", "Invalid totalQnum or Delay")
         
+
+class TaskGeneratorFrame(LabelFrame):
+    def __init__(self, master, masterMaster):
+        super().__init__(master)
+         
+        self.frame_mode = LabelFrame(self)
+        self.frame_questionNum = Frame (self.frame_mode)
+
+        self.mode = BooleanVar()
+        self.btn_mode1 = Radiobutton(self.frame_mode, 
+                text="Set Amount of Qs to generate:",
+                variable=self.mode,               
+                value=1,
+                command=lambda: self.master.master.enable(self.frame_questionNum.winfo_children()))
+        self.btn_mode1.grid(row=1, column=0, columnspan=1, sticky=W, pady=(5, 1), padx=(10, 10))
+
+        self.questionNum = StringVar(self.frame_mode)
+        choices = ['4','6','8','10','12','15','20','25','30','35']
+        self.questionNum.set(choices[0])
+        self.label_questionNum = Label(self.frame_questionNum, text="Num. of Qs:")
+        self.menu_questionNum = OptionMenu(self.frame_questionNum, self.questionNum, *choices)
+
+        self.label_questionNum.grid(row=2, column=1, columnspan=1, sticky=W, pady=(0, 1), padx=(1, 10))
+        self.menu_questionNum.grid(row=2, column=2, columnspan=1, pady=(1, 0), padx=(1, 10))
+
+        self.btn_mode0 = Radiobutton(self.frame_mode, 
+               text="Infinite          ",
+               variable=self.mode, 
+               value=0,
+                command=lambda: self.master.master.disable(self.frame_questionNum.winfo_children()))
+        self.btn_mode0.grid(row=3, column=0, columnspan=1, sticky=W, pady=(0, 10), padx=(10, 10))
+
+        self.frame_questionNum.grid(row=2, columnspan=2, pady=(1, 0))
+
+        self.frame_mode.grid(row=1, column=1, rowspan=2, columnspan=1, pady=(10, 10), padx=(20, 10))
+
+        self.frame_interleave = LabelFrame(self)
+
+        self.intlerleave = BooleanVar()
+        self.btn_intlerleave0 = Radiobutton(self.frame_interleave, 
+               text="Don't Interleave Qs Types",
+               variable=self.intlerleave, 
+               value=0)
+        self.btn_intlerleave0.grid(row=1, column=2, columnspan=1, sticky=W, pady=(10, 2), padx=(10, 10))
+        self.btn_intlerleave1 = Radiobutton(self.frame_interleave, 
+               text="Interleave Qs Types",
+               variable=self.intlerleave, 
+               value=1)
+        self.btn_intlerleave1.grid(row=2, column=2, columnspan=1, sticky=W, pady=(2, 10), padx=(10, 10))
+
+        self.frame_interleave.grid(row=1, column=2, columnspan=1, pady=(10, 0), padx=(10, 10))
+
+
+        self.frame_amount = LabelFrame(self)
+        self.label_amount = Label(self.frame_amount, text="Num. of Skills:")
+        self.entry_amount = Entry(self.frame_amount, width=12)
+
+        self.label_amount.grid(row=2, column=1, columnspan=1, sticky=W, pady=(0, 1), padx=(1, 10))
+        self.entry_amount.grid(row=2, column=2, columnspan=1, pady=(1, 0), padx=(1, 10))
+        self.frame_amount.grid(row=2, column=2, columnspan=1, pady=(0, 10), padx=(10, 10))
+
+        self.frame_tid = LabelFrame(self)
+
+        self.label_tid = Label(self.frame_tid, text='Include Questions That Are:')
+        self.label_tid.grid(row=0, column=0)
+
+        self.doUnseen = BooleanVar()
+        self.doStarted = BooleanVar()
+        self.doComplete = BooleanVar()
+
+        self.doUnseen.set(False)
+        self.doStarted.set(False)
+        self.doComplete.set(False)
+
+        self.btn_doUnseen = Checkbutton(self.frame_tid, text='Unseen',variable=self.doUnseen, onvalue=True, offvalue=False)
+        self.btn_doUnseen.grid(row=1, column=0)
+        self.btn_doStarted = Checkbutton(self.frame_tid, text='Started',variable=self.doStarted, onvalue=True, offvalue=False)
+        self.btn_doStarted.grid(row=2, column=0)
+        self.btn_doComplete = Checkbutton(self.frame_tid, text='Completed',variable=self.doComplete, onvalue=True, offvalue=False)
+        self.btn_doComplete.grid(row=3, column=0)
+
+        self.frame_tid.grid(row=1, column=3, columnspan=1, rowspan=2, pady=(10, 10), padx=(10, 20))
+
+
+        self.start_btn = Button(self, text="Generate", command=self._Generate_btn_clicked)
+        self.start_btn.grid(column= 1, columnspan=3, pady=(1, 10), padx=(10, 10))
+
+
+    def _Generate_btn_clicked(self):
+        tidNum = []
+        if self.doUnseen.get():
+            tidNum.append(0)
+        if self.doStarted.get():
+            tidNum.append(1)
+        if self.doComplete.get():
+            tidNum.append(2)
+        try:
+            amountSkills = self.entry_amount.get()
+            amountSkills = int(amountSkills)
+        except (TypeError, ValueError):
+            tkm.showerror("Input error", "Invalid Amount - Num of Skills ≈654 max")        
+        try:
+            self.master.master.interface.generate_task(self.mode.get(), self.intlerleave.get(), tidNum, amountSkills, int(self.questionNum.get()), self.master)
+        except (TypeError, ValueError):
+            tkm.showerror("Input error", "")
 
 
 
@@ -176,7 +384,7 @@ class OutputFrame(LabelFrame):
     def __init__(self, master, controller):
         super().__init__(master)
 
-        self.textbox = Text(self, height=19, width=50)
+        self.textbox = Text(self, height=24, width=50)
         self.textbox.configure(state='disabled')
         self.textbox.grid(row=0, column=0)
 
@@ -218,7 +426,6 @@ class HelpWindow(Toplevel):
         self.btn_quit.grid(column=0)
 
 
-       
 
 
 
@@ -240,8 +447,11 @@ class Interface:
     def __init__(self):
         self.session = Session()
 
-    def main_loop(self, url=None, totalQnum=0, autoSubmit = True, root=None):
+
+    #This despritly needs rewriting.
+    def main_loop(self, url=None, totalQnum=0, minDelay=0, maxDelay=0, autoSubmit = True, root=None, subMain=None):
         handler = AnswerHandler(self.session)
+        #Legacy
         if url==None:
             print('Press ctrl-c to quit')
             while True:
@@ -255,20 +465,31 @@ class Interface:
         else:
             if totalQnum > 0:
                 for q in range(1,totalQnum+1): #from 1 to toalt +1 as its q=1 when question_num =1
-                    res, err = handler.answer_question_V3(url, autoSubmit)
-                    if res:
-                        if err:
-                            break
+                    answer, qnum = handler.answer_question_V4_part1(url)
+                    checkRes = subMain.checkQnum(qnum)
+                    if not checkRes:
+                        break
+                    if answer:
+                        pass
                     else:
                         print(f'Unexpected exception occurred: {err}', file=sys.stderr)
                         traceback.print_exc()
                         break
+                    print(f'Answer:{answer}\nNow waiting for delay')
+
                     root.update()
+                    delay = int(uniform(minDelay, maxDelay))
+                    for time in range(0,delay*100,1):
+                        root.after(10, root.update())
+                    print('Answered\n')
+                    res, err = handler.answer_question_V4_part2()
+                    
                 print('Done')
 
             else:
-                res, err = handler.answer_question_V3(url, autoSubmit)
-                if res:
+                answer, qnum = handler.answer_question_V4_part1(url)
+                print(f'Question {qnum}: {answer}')
+                if answer:
                     pass
                 else:
                     print(f'Unexpected exception occurred: {err}', file=sys.stderr)
@@ -280,17 +501,25 @@ class Interface:
                                  ' Chrome/87.0.4280.141 Safari/537.36'}
         data = {'login-email': email, 'login-password': password}
 
-        self.session.post(login_url, headers=headers, data=data, verify=False)
+        self.session.post(login_url, headers=headers, data=data)
         try:
             """
             verifying user is authenticated by tests if user can load the times tables
             """
-            res = self.session.get('https://www.drfrostmaths.com/homework/process-starttimestables.php', verify=False)
+            res = self.session.get('https://www.drfrostmaths.com/homework/process-starttimestables.php')
             json.loads(res.text)
             
             
         except BaseException:
             raise InvalidLoginDetails(f'Email: {email}, Password: {"*" * len(password)}')
+    
+    def generate_task(self, modeNum, interleave, tidNum, amountSkills, amountQuestions, root=None):
+        generator = taskGenerator(self.session)
+        res, err = generator.makeTask_V1(modeNum, interleave, tidNum, amountSkills, amountQuestions)
+        if res:
+            print(f'Generated URL: {res}\n')
+        if err:
+            print(err)
 
 
 

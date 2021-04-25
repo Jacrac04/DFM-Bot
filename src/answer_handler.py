@@ -3,7 +3,10 @@ import json
 import sys
 from statistics import mean
 
-from parser_utils import Parser, NoQuestionFound, AAID_REGEX, FIND_DIGIT_REGEX
+try:
+    from src.parser_utils import Parser, NoQuestionFound, AAID_REGEX, FIND_DIGIT_REGEX
+except:
+    from src.parser_utils import Parser, NoQuestionFound, AAID_REGEX, FIND_DIGIT_REGEX
 
 
 class InvalidURLException(BaseException):
@@ -53,6 +56,8 @@ class AnswerHandler:
                                  'desmos_line': self.answer_desmosLine,
                                  'ratio': self.answer_ratio,
                                  'ordered': self.answer_ordered}
+        self.current_answer = None
+        self.current_answer_data = None
 
 
     def find_answer(self, data: dict, type_: str):
@@ -76,38 +81,36 @@ class AnswerHandler:
         print(f'Request: {data}')
         print(f'Response: {response}')
 
+
+    #Old Way - Could get you banned
     @catch
     def answer_questions_V3(self, url: str, submit=True):
-        try:
-            aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
-        except IndexError:
-            raise InvalidURLException(url)
-
         while True:
-            page = self.sesh.get(url, headers=self.headers, verify=False).text
-            ansMethordType, data, type_ = Parser.parse_V2(page)
+            answer, qnum = answer_question_V4_part1(url)
+            if submit:
+                answer_question_V4_part2()
 
-            if ansMethordType == 1:
-                answer = self.find_answer_qid(data, type_)
-            elif ansMethordType == 2:
-                answer = self.find_answer_params(data, type_)
-
-            data['aaid'] = aaid
-
-            try:
-                result = self.answer_functions[type_](data, answer)  # select appropriate function to process answer
-            except KeyError:
-                self.new_type(answer, type_)  # not implemented type
-                continue  # skips auto submit
-
-            self.submit(result)
+            print(f'Answer: {self.beautify_Answer(answer)}\n')
+            return True, False
+    #Old Way - Could get you banned
     @catch
     def answer_question_V3(self, url: str, submit: bool):
+        answer, qnum = answer_question_V4_part1(url)
+        if submit:
+            answer_question_V4_part2()
+
+        print(f'Answer: {self.beautify_Answer(answer)}\n')
+        return True, False
+
+
+    #New answer_question
+    @catch    
+    def answer_question_V4_part1(self, url: str):
         try:
             aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
         except IndexError:
             raise InvalidURLException(url)
-        page = self.sesh.get(url, headers=self.headers, verify=False).text
+        page = self.sesh.get(url, headers=self.headers).text
         ansMethordType, data, type_ = Parser.parse_V2(page)
 
         if ansMethordType == 1:
@@ -117,18 +120,25 @@ class AnswerHandler:
 
         data['aaid'] = aaid
 
-        if submit:
-            try:
-                result = self.answer_functions[type_](data, answer)  # select appropriate function to process answer
-            except KeyError:
-                self.new_type(answer, type_)  # not implemented type
-                return True, True
-            
-            self.submit(result)
+        self.current_answer = answer
+        self.current_answer_data = data
+        self.type_ = type_
 
-        print(f'Answer: {self.beautify_Answer(answer)}\n')
-        return True, False
+        return answer, data['qnum']
+
+    def answer_question_V4_part2(self):
+        try:
+            result = self.answer_functions[self.type_](self.current_answer_data, self.current_answer)  # select appropriate function to process answer
+        except KeyError:
+            self.new_type(self.current_answer, self.type_)  # not implemented type
+            return #something
         
+        self.submit(result)
+
+        return True, False#something
+
+
+
             
 
     def find_answer_qid(self, data: dict, type_: str):
@@ -157,7 +167,7 @@ class AnswerHandler:
 
     def submit(self, data: dict):
         try:
-            r = self.sesh.post(self.process_ans_url, headers=self.headers, data=data, timeout=3, verify=False)
+            r = self.sesh.post(self.process_ans_url, headers=self.headers, data=data, timeout=3)
         except BaseException:
             return False
         

@@ -1,6 +1,6 @@
 answer_handler_dev.py
 .venv/*
-.vscode/settings.json
+.vscode/*
 __pycache__/*
 UI.py
 Tests.py
@@ -11,3 +11,6 @@ Builds/*
 icon.ico
 favicon.ico
 icon2.ico
+DFM_Workspace.code-workspace
+src/__pycache__/*
+ServerStatus/__pycache__/*
