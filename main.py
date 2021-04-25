@@ -10,6 +10,7 @@ from random import uniform
 
 from tkinter import *
 import tkinter.messagebox as tkm
+from tkinter.messagebox import askyesno
 
 import sys
 
@@ -210,9 +211,21 @@ class MainFrame(LabelFrame):
         self.start_btn = Button(self, text="Start", command=self._start_btn_clicked)
         self.start_btn.grid(columnspan=2, pady=(1, 10), padx=(10, 10))
 
-   
+    @staticmethod
+    def checkDelay(min, max):
+        if min < 3:
+            answer = askyesno(title='Confirmation',
+                message='By having a short delay you could get banned, This has only been tested with delays greater than 5. \nDo you want to continue?')
+            if not answer: 
+                    return False
+        if min==max:
+                answer = askyesno(title='Confirmation',
+                message='By having the same min and max there is no varriance, you COULD BE banned. \nDo you want to continue?')
+                if not answer: 
+                    return False
+        return True
 
-    def _start_btn_clicked(self):
+    def _start_btn_clicked(self, ):
         self.url = None
         self.totalQnum = 0
         self.minDelay = 0
@@ -225,6 +238,9 @@ class MainFrame(LabelFrame):
                 self.minDelay = float(self.minDelay)
                 self.maxDelay = self.entry_maxDelay.get()
                 self.maxDelay = float(self.maxDelay)
+                confResp = self.checkDelay(self.minDelay, self.maxDelay)
+                if not confResp:
+                    raise TypeError
             if len(url) == 8:
                 self.url = 'https://www.drfrostmaths.com/do-question.php?aaid=' + url
             else:
