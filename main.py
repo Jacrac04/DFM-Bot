@@ -10,8 +10,8 @@ from tkinter import *
 import tkinter.messagebox as tkm
 from tkinter.messagebox import askyesno
 
-from answer_handler import AnswerHandler
-from generateTask import taskGenerator
+from src.answer_handler import AnswerHandler
+from src.generateTask import taskGenerator
 from ServerStatus.server_check import check_status
 
 
