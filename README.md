@@ -47,7 +47,7 @@ It was originally based of [AK163631's Answer Tool](https://github.com/AK163631/
 
 ### Version 4 Update!
 New Features:
-- Delay - You can add a dealy wehn answering questions.
+- Delay - You can add a delay when answering questions.
 - Warnings - If you try to do something known to get you banned, it will warn you.
 - Task Generator - Generate Question lists
 - Update Checker - This can be disabled by changing `ENABLE_STATUS_CHECK = True` to `ENABLE_STATUS_CHECK = False` in `main.py`
