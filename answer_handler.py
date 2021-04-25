@@ -78,61 +78,29 @@ class AnswerHandler:
         print(f'Request: {data}')
         print(f'Response: {response}')
 
+
     #Old Way - Could get you banned
     @catch
     def answer_questions_V3(self, url: str, submit=True):
-        try:
-            aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
-        except IndexError:
-            raise InvalidURLException(url)
-
         while True:
-            page = self.sesh.get(url, headers=self.headers, verify=False).text
-            ansMethordType, data, type_ = Parser.parse_V2(page)
+            answer, qnum = answer_question_V4_part1(url)
+            if submit:
+                answer_question_V4_part2()
 
-            if ansMethordType == 1:
-                answer = self.find_answer_qid(data, type_)
-            elif ansMethordType == 2:
-                answer = self.find_answer_params(data, type_)
-
-            data['aaid'] = aaid
-
-            try:
-                result = self.answer_functions[type_](data, answer)  # select appropriate function to process answer
-            except KeyError:
-                self.new_type(answer, type_)  # not implemented type
-                continue  # skips auto submit
-
-            self.submit(result)
+            print(f'Answer: {self.beautify_Answer(answer)}\n')
+            return True, False
     #Old Way - Could get you banned
     @catch
     def answer_question_V3(self, url: str, submit: bool):
-        try:
-            aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
-        except IndexError:
-            raise InvalidURLException(url)
-        page = self.sesh.get(url, headers=self.headers, verify=False).text
-        ansMethordType, data, type_ = Parser.parse_V2(page)
-
-        if ansMethordType == 1:
-            answer = self.find_answer_qid(data, type_)
-        elif ansMethordType == 2:
-            answer = self.find_answer_params(data, type_)
-
-        data['aaid'] = aaid
-
+        answer, qnum = answer_question_V4_part1(url)
         if submit:
-            try:
-                result = self.answer_functions[type_](data, answer)  # select appropriate function to process answer
-            except KeyError:
-                self.new_type(answer, type_)  # not implemented type
-                return True, True
-            
-            self.submit(result)
+            answer_question_V4_part2()
 
         print(f'Answer: {self.beautify_Answer(answer)}\n')
         return True, False
 
+
+    #New answer_question
     @catch    
     def answer_question_V4_part1(self, url: str):
         try:
