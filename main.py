@@ -1,20 +1,19 @@
-import json
 import traceback
 import sys
-
-from requests import Session
-from answer_handler import AnswerHandler
-from generateTask import taskGenerator
-from server_check import check_status
+import json
+from random import uniform
 
 import urllib3
-from random import uniform
+from requests import Session
 
 from tkinter import *
 import tkinter.messagebox as tkm
 from tkinter.messagebox import askyesno
 
-import sys
+from answer_handler import AnswerHandler
+from generateTask import taskGenerator
+from ServerStatus.server_check import check_status
+
 
 CURRENT_VERSION = 'v4.0.0alpha1'
 ENABLE_STATUS_CHECK = True
