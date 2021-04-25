@@ -3,7 +3,10 @@ import json
 import sys
 from statistics import mean
 
-from src.parser_utils import Parser, NoQuestionFound, AAID_REGEX, FIND_DIGIT_REGEX
+try:
+    from src.parser_utils import Parser, NoQuestionFound, AAID_REGEX, FIND_DIGIT_REGEX
+except:
+    from src.parser_utils import Parser, NoQuestionFound, AAID_REGEX, FIND_DIGIT_REGEX
 
 
 class InvalidURLException(BaseException):
