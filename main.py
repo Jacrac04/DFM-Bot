@@ -12,6 +12,7 @@ from random import uniform
 
 from tkinter import *
 import tkinter.messagebox as tkm
+from tkinter.messagebox import askyesno
 
 import sys
 
@@ -218,9 +219,38 @@ class MainFrame(LabelFrame):
         self.start_btn = Button(self, text="Start", command=self._start_btn_clicked)
         self.start_btn.grid(columnspan=2, pady=(1, 10), padx=(10, 10))
 
-   
+    @staticmethod
+    def checkDelay(min, max):
+        if min < 3:
+            answer = askyesno(title='Confirmation',
+                message='By having a short delay you could get banned, This has only been tested with delays greater than 5. \nDo you want to continue?')
+            if not answer: 
+                    return False
+        if min==max:
+                answer = askyesno(title='Confirmation',
+                message='By having the same min and max there is no varriance, you COULD BE banned. \nDo you want to continue?')
+                if not answer: 
+                    return False
+        return True
+    
+    def checkQnum(self, qnum):
+        qnum = int(qnum)
+        if not self.shownBefore:
+            if qnum > 98: # Prob here
+                answer = askyesno(title='Warning',
+                    message=f'You can get banned for over 300 questions completed but the warning appears at 100. Current qnum: {qnum}\nDo you want to continue?')
+                if not answer: 
+                        return False
+                self.shownBefore = True
+        if qnum > 290:
+            answer = askyesno(title='Critical Warning',
+                message=f'You WILL BE banned for over 300 questions completed. Current qnum: {qnum}\nDo you want to continue?')
+            if not answer: 
+                    return False
+        print('here')
+        return True
 
-    def _start_btn_clicked(self):
+    def _start_btn_clicked(self, ):
         self.url = None
         self.totalQnum = 0
         self.minDelay = 0
@@ -233,11 +263,15 @@ class MainFrame(LabelFrame):
                 self.minDelay = float(self.minDelay)
                 self.maxDelay = self.entry_maxDelay.get()
                 self.maxDelay = float(self.maxDelay)
+                confResp = self.checkDelay(self.minDelay, self.maxDelay)
+                if not confResp:
+                    raise TypeError
             if len(url) == 8:
                 self.url = 'https://www.drfrostmaths.com/do-question.php?aaid=' + url
             else:
                 self.url = url
-            self.master.interface.main_loop(self.url, self.totalQnum, self.minDelay, self.maxDelay, self.autoSubmit.get(), self.master)
+            self.shownBefore = False
+            self.master.interface.main_loop(self.url, self.totalQnum, self.minDelay, self.maxDelay, self.autoSubmit.get(), self.master, self)
         except TypeError or ValueError:
             tkm.showerror("Input error", "Invalid totalQnum or Delay")
         
@@ -419,7 +453,7 @@ class Interface:
 
 
     #This despritly needs rewriting.
-    def main_loop(self, url=None, totalQnum=0, minDelay=0, maxDelay=0, autoSubmit = True, root=None):
+    def main_loop(self, url=None, totalQnum=0, minDelay=0, maxDelay=0, autoSubmit = True, root=None, subMain=None):
         handler = AnswerHandler(self.session)
         #Legacy
         if url==None:
@@ -435,7 +469,10 @@ class Interface:
         else:
             if totalQnum > 0:
                 for q in range(1,totalQnum+1): #from 1 to toalt +1 as its q=1 when question_num =1
-                    answer = handler.answer_question_V4_part1(url)
+                    answer, qnum = handler.answer_question_V4_part1(url)
+                    checkRes = subMain.checkQnum(qnum)
+                    if not checkRes:
+                        break
                     if answer:
                         pass
                     else:
@@ -454,8 +491,8 @@ class Interface:
                 print('Done')
 
             else:
-                answer = handler.answer_question_V4_part1(url)
-                print(answer)
+                answer, qnum = handler.answer_question_V4_part1(url)
+                print(f'Question {qnum}: {answer}')
                 if answer:
                     pass
                 else:

@@ -153,7 +153,7 @@ class AnswerHandler:
         self.current_answer_data = data
         self.type_ = type_
 
-        return answer
+        return answer, data['qnum']
 
     def answer_question_V4_part2(self):
         try:
