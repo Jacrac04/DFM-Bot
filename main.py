@@ -19,16 +19,14 @@ import sys
 CURRENT_VERSION = 'v4.0.0alpha1'
 ENABLE_STATUS_CHECK = True
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
 
 class IORedirector(object):
-    '''A general class for redirecting I/O to this Text widget.'''
+    #A general class for redirecting I/O to this Text widget.
     def __init__(self,text_area):
         self.text_area = text_area
 
 class StdoutRedirector(IORedirector):
-    '''A class for redirecting stdout to this Text widget.'''
+    #A class for redirecting stdout to this Text widget.
     def write(self,text):
         self.text_area.configure(state='normal')
         self.text_area.insert(END, text)
@@ -180,12 +178,12 @@ class MainFrame(LabelFrame):
         self.entry_url.grid(row=0, column=1, pady=(10, 1), padx=(1, 10))
         
         self.autoSubmit = BooleanVar()
-        self.autoSubBtn = Radiobutton(self, 
+        self.btn_autoSub = Radiobutton(self, 
                text="Auto Submit:",
                variable=self.autoSubmit, 
                value=True,
                 command=lambda:self.master.enable(self.frame_totalQnum.winfo_children()))
-        self.autoSubBtn.grid(row=1, columnspan=2, sticky=W, pady=(10, 0), padx=(10, 10))
+        self.btn_autoSub.grid(row=1, columnspan=2, sticky=W, pady=(10, 0), padx=(10, 10))
 
 
         self.label_totalQnum = Label(self.frame_totalQnum, text="Num. of Qs to Answer")
@@ -208,12 +206,12 @@ class MainFrame(LabelFrame):
         self.frame_totalQnum.grid(row=3, columnspan=2, pady=(1, 0))
 
 
-        self.manSubBtn = Radiobutton(self, 
+        self.btn_manSub = Radiobutton(self, 
                     text="Manual Submit",
                     variable=self.autoSubmit,               
                     value=False,
                     command=lambda: self.master.disable(self.frame_totalQnum.winfo_children()))
-        self.manSubBtn.grid(row=4, columnspan=2, sticky=W, pady=(5, 10), padx=(10, 10))
+        self.btn_manSub.grid(row=4, columnspan=2, sticky=W, pady=(5, 10), padx=(10, 10))
 
         
         self.start_btn = Button(self, text="Start", command=self._start_btn_clicked)
@@ -271,7 +269,7 @@ class MainFrame(LabelFrame):
                 self.url = url
             self.shownBefore = False
             self.master.interface.main_loop(self.url, self.totalQnum, self.minDelay, self.maxDelay, self.autoSubmit.get(), self.master, self)
-        except TypeError or ValueError:
+        except (TypeError, ValueError):
             tkm.showerror("Input error", "Invalid totalQnum or Delay")
         
 
@@ -283,12 +281,12 @@ class TaskGeneratorFrame(LabelFrame):
         self.frame_questionNum = Frame (self.frame_mode)
 
         self.mode = BooleanVar()
-        self.mode1Btn = Radiobutton(self.frame_mode, 
+        self.btn_mode1 = Radiobutton(self.frame_mode, 
                 text="Set Amount of Qs to generate:",
                 variable=self.mode,               
                 value=1,
                 command=lambda: self.master.master.enable(self.frame_questionNum.winfo_children()))
-        self.mode1Btn.grid(row=1, column=0, columnspan=1, sticky=W, pady=(5, 1), padx=(10, 10))
+        self.btn_mode1.grid(row=1, column=0, columnspan=1, sticky=W, pady=(5, 1), padx=(10, 10))
 
         self.questionNum = StringVar(self.frame_mode)
         choices = ['4','6','8','10','12','15','20','25','30','35']
@@ -299,12 +297,12 @@ class TaskGeneratorFrame(LabelFrame):
         self.label_questionNum.grid(row=2, column=1, columnspan=1, sticky=W, pady=(0, 1), padx=(1, 10))
         self.menu_questionNum.grid(row=2, column=2, columnspan=1, pady=(1, 0), padx=(1, 10))
 
-        self.mode0Btn = Radiobutton(self.frame_mode, 
+        self.btn_mode0 = Radiobutton(self.frame_mode, 
                text="Infinite          ",
                variable=self.mode, 
                value=0,
                 command=lambda: self.master.master.disable(self.frame_questionNum.winfo_children()))
-        self.mode0Btn.grid(row=3, column=0, columnspan=1, sticky=W, pady=(0, 10), padx=(10, 10))
+        self.btn_mode0.grid(row=3, column=0, columnspan=1, sticky=W, pady=(0, 10), padx=(10, 10))
 
         self.frame_questionNum.grid(row=2, columnspan=2, pady=(1, 0))
 
@@ -313,16 +311,16 @@ class TaskGeneratorFrame(LabelFrame):
         self.frame_interleave = LabelFrame(self)
 
         self.intlerleave = BooleanVar()
-        self.intlerleave0Btn = Radiobutton(self.frame_interleave, 
+        self.btn_intlerleave0 = Radiobutton(self.frame_interleave, 
                text="Don't Interleave Qs Types",
                variable=self.intlerleave, 
                value=0)
-        self.intlerleave0Btn.grid(row=1, column=2, columnspan=1, sticky=W, pady=(10, 2), padx=(10, 10))
-        self.intlerleave1Btn = Radiobutton(self.frame_interleave, 
+        self.btn_intlerleave0.grid(row=1, column=2, columnspan=1, sticky=W, pady=(10, 2), padx=(10, 10))
+        self.btn_intlerleave1 = Radiobutton(self.frame_interleave, 
                text="Interleave Qs Types",
                variable=self.intlerleave, 
                value=1)
-        self.intlerleave1Btn.grid(row=2, column=2, columnspan=1, sticky=W, pady=(2, 10), padx=(10, 10))
+        self.btn_intlerleave1.grid(row=2, column=2, columnspan=1, sticky=W, pady=(2, 10), padx=(10, 10))
 
         self.frame_interleave.grid(row=1, column=2, columnspan=1, pady=(10, 0), padx=(10, 10))
 
@@ -348,12 +346,12 @@ class TaskGeneratorFrame(LabelFrame):
         self.doStarted.set(False)
         self.doComplete.set(False)
 
-        self.doUnseenBtn = Checkbutton(self.frame_tid, text='Unseen',variable=self.doUnseen, onvalue=True, offvalue=False)
-        self.doUnseenBtn.grid(row=1, column=0)
-        self.doStartedBtn = Checkbutton(self.frame_tid, text='Started',variable=self.doStarted, onvalue=True, offvalue=False)
-        self.doStartedBtn.grid(row=2, column=0)
-        self.doCompleteBtn = Checkbutton(self.frame_tid, text='Completed',variable=self.doComplete, onvalue=True, offvalue=False)
-        self.doCompleteBtn.grid(row=3, column=0)
+        self.btn_doUnseen = Checkbutton(self.frame_tid, text='Unseen',variable=self.doUnseen, onvalue=True, offvalue=False)
+        self.btn_doUnseen.grid(row=1, column=0)
+        self.btn_doStarted = Checkbutton(self.frame_tid, text='Started',variable=self.doStarted, onvalue=True, offvalue=False)
+        self.btn_doStarted.grid(row=2, column=0)
+        self.btn_doComplete = Checkbutton(self.frame_tid, text='Completed',variable=self.doComplete, onvalue=True, offvalue=False)
+        self.btn_doComplete.grid(row=3, column=0)
 
         self.frame_tid.grid(row=1, column=3, columnspan=1, rowspan=2, pady=(10, 10), padx=(10, 20))
 
@@ -373,11 +371,11 @@ class TaskGeneratorFrame(LabelFrame):
         try:
             amountSkills = self.entry_amount.get()
             amountSkills = int(amountSkills)
-        except TypeError or ValueError:
+        except (TypeError, ValueError):
             tkm.showerror("Input error", "Invalid Amount - Num of Skills ≈654 max")        
         try:
             self.master.master.interface.generate_task(self.mode.get(), self.intlerleave.get(), tidNum, amountSkills, int(self.questionNum.get()), self.master)
-        except TypeError or ValueError:
+        except (TypeError, ValueError):
             tkm.showerror("Input error", "")
 
 
