@@ -15,7 +15,7 @@ from src.generateTask import taskGenerator
 from ServerStatus.server_check import check_status
 
 
-CURRENT_VERSION = 'v4.0.0alpha1'
+CURRENT_VERSION = 'v4.0.0alpha2'
 ENABLE_STATUS_CHECK = True
 
 
