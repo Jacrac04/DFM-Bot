@@ -236,7 +236,7 @@ class MainFrame(LabelFrame):
     def checkQnum(self, qnum):
         qnum = int(qnum)
         if not self.shownBefore:
-            if qnum > 98: # Prob here
+            if qnum > 98: 
                 answer = askyesno(title='Warning',
                     message=f'You can get banned for over 300 questions completed but the warning appears at 100. Current qnum: {qnum}\nDo you want to continue?')
                 if not answer: 
@@ -247,7 +247,6 @@ class MainFrame(LabelFrame):
                 message=f'You WILL BE banned for over 300 questions completed. Current qnum: {qnum}\nDo you want to continue?')
             if not answer: 
                     return False
-        print('here')
         return True
 
     def _start_btn_clicked(self, ):
