@@ -250,6 +250,7 @@ class MainFrame(LabelFrame):
         self.url = None
         self.totalQnum = 0
         self.minDelay = 0
+        self.maxDelay = 0
         url = self.entry_url.get()
         try:
             if self.autoSubmit.get():
