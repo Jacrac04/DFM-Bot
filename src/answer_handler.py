@@ -174,7 +174,7 @@ class AnswerHandler:
             
     def beautify_Answer(self, answer):
         try:
-            answer = answer['main'].replace("'",'"').replace('\\left',  "").replace('\\right',  "")
+            answer = answer['main'].replace("'",'"').replace('\\left',  "").replace('\\right',  "").strip("|")
             return answer
         except:
             return answer
