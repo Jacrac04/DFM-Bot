@@ -174,7 +174,7 @@ class AnswerHandler:
             
     def beautify_Answer(self, answer):
         try:
-            answer = answer['main'].replace("'",'"').replace('\\left',  "").replace('\\right',  "")
+            answer = answer['main'].replace("'",'"').replace('\\left',  "").replace('\\right',  "").strip("|")
             return answer
         except:
             return answer
@@ -300,18 +300,19 @@ class AnswerHandler:
 
     @staticmethod
     def answer_desmosLine(data, answer):
+        print(data['permid'])
         try:
             a = data['permid']
         except:
             data['permid'] = 0
-        if data['permid'] == '240':
+        if data['permid'] == '240' or data['permid'] == '242':
             m, c = answer
             temp = [{"x":"0","y":""},{"x":"1","y":""}]
             temp[0]['y'] = (0 *m) + c
             temp[1]['y'] = (1 *m) + c
             #y=mx+c
             data['userAnswer'] = temp
-        elif data['permid'] == 484 or data['permid'] == 484:
+        elif data['permid'] == '484' or data['permid'] == 484:
             a, b, c = answer
             temp = [{"x":"0","y":""},{"x":"1","y":""},{"x":"2","y":""}]
             temp[0]['y'] = (0 * a) + (0 * b) + c
@@ -322,5 +323,6 @@ class AnswerHandler:
         elif data['permid'] == '583':
             raise KeyError # Its weird
         else:
-            data['userAnswer'] = json.dumps(answer)
+            print(f'Unsuported Line Type, permid: {a}')
+            # data['userAnswer'] = json.dumps(answer)
         return data
