@@ -489,11 +489,11 @@ class Interface:
 
             else:
                 answer, qnum = handler.answer_question_V4_part1(url)
-                print(f'Question {qnum}: {answer}')
+                #print(f'Question {qnum}: {answer}')
                 if answer:
-                    pass
+                    print(f'Question {qnum}: {answer}')
                 else:
-                    print(f'Unexpected exception occurred: {err}', file=sys.stderr)
+                    print(f'Unexpected exception occurred: {qnum}', file=sys.stderr)
                     traceback.print_exc()
 
     def test_login(self, email, password):
