@@ -119,11 +119,21 @@ class SubWindowManagerFrame(LabelFrame):
         self.btn_taskGen = Button(self, text="Task Generator", command=self.openTaskGenerator)
         self.btn_taskGen.grid(column=1, row=1, padx=10, pady=10)
 
+        self.btn_taskGen = Button(self, text="Timestable Bot", command=self.openTimestableBot)
+        self.btn_taskGen.grid(column=2, row=1, padx=10, pady=10)
+
     def openTaskGenerator(self):
         self.taskGeneratorWindow= Toplevel(self.master)
         self.gf = TaskGeneratorFrame(self.taskGeneratorWindow, self.master)
         self.gf.grid(column=0, row=1, columnspan=2, padx=10, pady=10)
         self.btn_taskGenClose = Button(self.taskGeneratorWindow, text="Close", command=self.taskGeneratorWindow.destroy)
+        self.btn_taskGenClose.grid(column=0, row=2, columnspan=2, padx=10, pady=10)
+    
+    def openTimestableBot(self):
+        self.timestableBotWindow= Toplevel(self.master)
+        self.gf = TimestableBotFrame(self.timestableBotWindow, self.master)
+        self.gf.grid(column=0, row=1, columnspan=2, padx=10, pady=10)
+        self.btn_taskGenClose = Button(self.timestableBotWindow, text="Close", command=self.timestableBotWindow.destroy)
         self.btn_taskGenClose.grid(column=0, row=2, columnspan=2, padx=10, pady=10)
 
 
@@ -272,6 +282,11 @@ class MainFrame(LabelFrame):
         except (TypeError, ValueError):
             tkm.showerror("Input error", "Invalid totalQnum or Delay")
         
+
+class TimestableBotFrame(LabelFrame):
+    def __init__(self, master, masterMaster):
+        super().__init__(master)
+
 
 class TaskGeneratorFrame(LabelFrame):
     def __init__(self, master, masterMaster):
