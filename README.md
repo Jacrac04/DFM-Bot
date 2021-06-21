@@ -51,6 +51,7 @@ New Features:
 - Warnings - If you try to do something known to get you banned, it will warn you.
 - Task Generator - Generate Question lists
 - Update Checker - This can be disabled by changing `ENABLE_STATUS_CHECK = True` to `ENABLE_STATUS_CHECK = False` in `main.py`
+- TimesTable Bot (Experimental) - Use this to get onto the timestable leaderboards!
 
 Other Changes:
 - Changed file layout
