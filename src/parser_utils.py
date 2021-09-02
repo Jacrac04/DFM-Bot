@@ -21,8 +21,8 @@ class Parser:
     @staticmethod
     def parse_V2(page: str):
         try:
-            
-            current_question_script = str(Parser.find_tags(page)[-4])
+            #Upgrade so it allows for changes to the question page
+            current_question_script = str(Parser.find_tags(page)[-2])
             _json = list(Parser.extract_json(current_question_script))[0]
 
             try:
