@@ -14,3 +14,4 @@ icon2.ico
 DFM_Workspace.code-workspace
 src/__pycache__/*
 ServerStatus/__pycache__/*
+.venv-DFM-Bot/*
