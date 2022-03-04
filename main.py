@@ -262,25 +262,25 @@ class MainFrame(LabelFrame):
         self.minDelay = 0
         self.maxDelay = 0
         url = self.entry_url.get()
-        try:
-            if self.autoSubmit.get():
-                self.totalQnum = self.entry_totalQnum.get()
-                self.totalQnum = int(self.totalQnum)
-                self.minDelay = self.entry_minDelay.get()
-                self.minDelay = float(self.minDelay)
-                self.maxDelay = self.entry_maxDelay.get()
-                self.maxDelay = float(self.maxDelay)
-                confResp = self.checkDelay(self.minDelay, self.maxDelay)
-                if not confResp:
-                    raise TypeError
-            if len(url) == 8:
-                self.url = 'https://www.drfrostmaths.com/do-question.php?aaid=' + url
-            else:
-                self.url = url
-            self.shownBefore = False
-            self.master.interface.main_loop(self.url, self.totalQnum, self.minDelay, self.maxDelay, self.autoSubmit.get(), self.master, self)
-        except (TypeError, ValueError):
-            tkm.showerror("Input error", "Invalid totalQnum or Delay")
+        # try:
+        if self.autoSubmit.get():
+            self.totalQnum = self.entry_totalQnum.get()
+            self.totalQnum = int(self.totalQnum)
+            self.minDelay = self.entry_minDelay.get()
+            self.minDelay = float(self.minDelay)
+            self.maxDelay = self.entry_maxDelay.get()
+            self.maxDelay = float(self.maxDelay)
+            confResp = self.checkDelay(self.minDelay, self.maxDelay)
+            if not confResp:
+                raise TypeError
+        if len(url) == 8:
+            self.url = 'https://www.drfrostmaths.com/do-question.php?aaid=' + url
+        else:
+            self.url = url
+        self.shownBefore = False
+        self.master.interface.main_loop(self.url, self.totalQnum, self.minDelay, self.maxDelay, self.autoSubmit.get(), self.master, self)
+        # except (TypeError, ValueError):
+        #     tkm.showerror("Input error", "Invalid totalQnum or Delay")
         
 
 class TimestableBotFrame(LabelFrame):
@@ -481,7 +481,7 @@ class Interface:
         else:
             if totalQnum > 0:
                 for q in range(1,totalQnum+1): #from 1 to toalt +1 as its q=1 when question_num =1
-                    answer, qnum = handler.answer_question_V4_part1(url)
+                    answer, qnum = handler.answer_question_V5_part1(url)
                     checkRes = subMain.checkQnum(qnum)
                     if not checkRes:
                         break
@@ -498,12 +498,12 @@ class Interface:
                     for time in range(0,delay*100,1):
                         root.after(10, root.update())
                     print('Answered\n')
-                    res, err = handler.answer_question_V4_part2()
+                    res, err = handler.answer_question_V5_part2()
                     
                 print('Done')
 
             else:
-                answer, qnum = handler.answer_question_V4_part1(url)
+                answer, qnum = handler.answer_question_V5_part1(url)
                 #print(f'Question {qnum}: {answer}')
                 if answer:
                     print(f'Question {qnum}: {answer}')
