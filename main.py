@@ -170,7 +170,7 @@ class LoginFrame(LabelFrame):
             self.master.enable(self.master.mf.winfo_children())
             self.master.enablegrandchild(self.master.gf.winfo_children())
         except InvalidLoginDetails as e:
-            print(e, file=sys.stderr)
+            print(e)
             tkm.showerror("Login error", "Incorrect Email or Password")
 
 
@@ -447,7 +447,7 @@ class HelpWindow(Toplevel):
 
 class Login():
     def __init__(self):
-        print('Ensure that your google acount is NOT linked')
+        print('Ensure that your google account is NOT linked')
         email = input('Email')
         password = input('Password')
         if '@' not in email:
@@ -455,7 +455,7 @@ class Login():
         try:
             Interface(email, password)
         except InvalidLoginDetails as e:
-            print(e, file=sys.stderr)
+            print(e)
 
 
 
@@ -464,7 +464,7 @@ class Interface:
         self.session = Session()
 
 
-    #This despritly needs rewriting.
+    #This desperately needs rewriting.
     def main_loop(self, url=None, totalQnum=0, minDelay=0, maxDelay=0, autoSubmit = True, root=None, subMain=None):
         handler = AnswerHandler(self.session)
         #Legacy
@@ -476,8 +476,8 @@ class Interface:
                 if res:
                     print('No more questions for this URL')
                 else:
-                    print(f'Unexpected exception occurred: {err}', file=sys.stderr)
-                    traceback.print_exc()
+                    print(f'Unexpected exception occurred: {err}')
+                    # traceback.print_exc()
         else:
             if totalQnum > 0:
                 for q in range(1,totalQnum+1): #from 1 to toalt +1 as its q=1 when question_num =1
@@ -488,8 +488,8 @@ class Interface:
                     if answer:
                         pass
                     else:
-                        print(f'Unexpected exception occurred: {err}', file=sys.stderr)
-                        traceback.print_exc()
+                        print(f'Unexpected exception occurred: {err}')
+                        # traceback.print_exc()
                         break
                     print(f'Answer:{answer}\nNow waiting for delay')
 
@@ -508,7 +508,7 @@ class Interface:
                 if answer:
                     print(f'Question {qnum}: {answer}')
                 else:
-                    print(f'Unexpected exception occurred: {qnum}', file=sys.stderr)
+                    print(f'Unexpected exception occurred: {qnum}')
                     traceback.print_exc()
 
     def test_login(self, email, password):
