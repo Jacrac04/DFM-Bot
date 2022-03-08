@@ -139,7 +139,8 @@ class AnswerHandler:
 
         return True, False#something
 
-    # @catch
+    # New New answer_question
+    @catch
     def answer_question_V5_part1(self, url: str):
         try:
             aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
@@ -164,8 +165,6 @@ class AnswerHandler:
 
 
 
-            
-
     def find_answer_qid(self, data: dict, type_: str):
         print(f'Question number: {data["qnum"]}', '|', f'Question type: {type_}')
         data = dict(data)
@@ -189,6 +188,7 @@ class AnswerHandler:
         
         return _json['answer'] 
     
+    # New find_answer
     def find_answer_V2(self, data: dict, type_: str, aaid):
         url = self.get_assess_url + '?aaid=' + aaid
         print(url)
