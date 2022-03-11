@@ -18,3 +18,4 @@ ServerStatus/__pycache__/*
 tests/*
 .gitignore
 __init__.py
+.venv-DFM-Bot/
