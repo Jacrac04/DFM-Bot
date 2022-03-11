@@ -2,6 +2,7 @@ import functools
 import json
 import sys
 from statistics import mean
+from src.lazyDecoder_utils import LazyDecoder
 
 try:
     from src.parser_utils import Parser, NoQuestionFound, AAID_REGEX, FIND_DIGIT_REGEX
@@ -39,6 +40,7 @@ class AnswerHandler:
         self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
                                       ' Chrome/87.0.4280.141 Safari/537.36'}
         self.process_ans_url = 'https://www.drfrostmaths.com/process-answer-new.php'
+        self.get_assess_url = 'https://www.drfrostmaths.com/homework/util-getassessmentattempt2.php'
         self.process_skip_url = 'https://www.drfrostmaths.com/process-skipquestion2.php'
         self.answer_functions = {
                                  'numeric': self.answer_numeric,
@@ -112,7 +114,7 @@ class AnswerHandler:
             raise InvalidURLException(url)
         page = self.sesh.get(url, headers=self.headers).text
         ansMethordType, data, type_ = Parser.parse_V2(page)
-
+        
         if ansMethordType == 1:
             answer = self.find_answer_qid(data, type_)
         elif ansMethordType == 2:
@@ -137,9 +139,31 @@ class AnswerHandler:
 
         return True, False#something
 
+    # New New answer_question
+    @catch
+    def answer_question_V5_part1(self, url: str):
+        try:
+            aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
+        except IndexError:
+            raise InvalidURLException(url)
+        page = self.sesh.get(url, headers=self.headers).text
+        ansMethordType, data, type_ = Parser.parse_V2(page)
+    
+        answer = self.find_answer_V2(data, type_, aaid)
+
+        data['aaid'] = aaid
+
+        self.current_answer = answer
+        self.current_answer_data = data
+        self.type_ = type_
+
+        return answer, data['qnum']
+
+    def answer_question_V5_part2(self):
+        return self.answer_question_V4_part2()
 
 
-            
+
 
     def find_answer_qid(self, data: dict, type_: str):
         print(f'Question number: {data["qnum"]}', '|', f'Question type: {type_}')
@@ -163,6 +187,15 @@ class AnswerHandler:
         _json = json.loads(r.text)
         
         return _json['answer'] 
+    
+    # New find_answer
+    def find_answer_V2(self, data: dict, type_: str, aaid):
+        url = self.get_assess_url + '?aaid=' + aaid
+        print(url)
+        r = self.sesh.get(url, headers=self.headers)
+        _json = json.loads(r.text, cls=LazyDecoder, strict=False)
+        ans = _json['questions'][int(data['qnum'])-1]['answer']['correctAnswer']
+        return ans
         
 
     def submit(self, data: dict):

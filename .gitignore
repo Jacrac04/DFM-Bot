@@ -15,4 +15,7 @@ DFM_Workspace.code-workspace
 src/__pycache__/*
 ServerStatus/__pycache__/*
 .venv-DFM-Bot/*
+tests/*
+.gitignore
+__init__.py
 .venv-DFM-Bot/
