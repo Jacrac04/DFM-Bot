@@ -193,7 +193,7 @@ class AnswerHandler:
         url = self.get_assess_url + '?aaid=' + aaid
         print(url)
         r = self.sesh.get(url, headers=self.headers)
-        _json = json.loads(r.text, cls=LazyDecoder, strict=False)
+        _json = json.loads(r.text, strict=False) # cls=LazyDecoder,
         ans = _json['questions'][int(data['qnum'])-1]['answer']['correctAnswer']
         return ans
         
