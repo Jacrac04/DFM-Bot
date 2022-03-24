@@ -7,6 +7,9 @@ assignees: ''
 
 ---
 
+### [Discussions](https://github.com/Jacrac04/DFM-Bot/discussions) Can Be Used For Feature Requests
+[Discussions](https://github.com/Jacrac04/DFM-Bot/discussions) can be used and allow for a more community input on features
+
 **Is your feature request related to a problem? Please describe.**
 A description of what the problem is. Ex. I would like [...], I'm always frustrated when [...]
 
