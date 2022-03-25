@@ -3,6 +3,7 @@ import json
 import sys
 from statistics import mean
 from src.lazyDecoder_utils import LazyDecoder
+from src.errorHandling import * #as errorHandling
 
 try:
     from src.parser_utils import Parser, NoQuestionFound, AAID_REGEX, FIND_DIGIT_REGEX
@@ -18,8 +19,6 @@ class InvalidURLException(BaseException):
     def __str__(self):
         return f"Invalid URL {self.__url}"
 
-class TestError(BaseException):
-    pass
 
 def catch(func):
     @functools.wraps(func)
@@ -140,14 +139,16 @@ class AnswerHandler:
 
     # New New answer_question
     # @catch
+    @questionCatchWrap
     def answer_question_V5_part1(self, url: str):
+        self.currentData = None
         try:
             aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
         except IndexError:
             raise InvalidURLException(url)
         page = self.sesh.get(url, headers=self.headers).text
         ansMethordType, data, type_ = Parser.parse_V2(page)
-    
+        self.currentData = data 
         answer = self.find_answer_V2(data, type_, aaid)
 
         data['aaid'] = aaid
@@ -157,7 +158,7 @@ class AnswerHandler:
         self.type_ = type_
 
         return answer, data['qnum']
-
+    @questionCatchWrap
     def answer_question_V5_part2(self):
         return self.answer_question_V4_part2()
 
@@ -194,7 +195,6 @@ class AnswerHandler:
         r = self.sesh.get(url, headers=self.headers)
         _json = json.loads(r.text, strict=False) # cls=LazyDecoder,
         ans = _json['questions'][int(data['qnum'])-1]['answer']['correctAnswer']
-        raise TestError
         return ans
         
 

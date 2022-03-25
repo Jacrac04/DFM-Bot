@@ -10,6 +10,7 @@ from tkinter import *
 import tkinter.messagebox as tkm
 from tkinter.messagebox import askyesno
 
+from src.errorHandling import * #as errorHandling
 from src.answer_handler import AnswerHandler
 from src.generateTask import taskGenerator
 from ServerStatus.server_check import check_status
@@ -477,6 +478,7 @@ class Interface:
 
 
     #This desperately needs rewriting.
+    @mainWrap
     def main_loop(self, url=None, totalQnum=0, minDelay=0, maxDelay=0, autoSubmit = True, root=None, subMain=None):
         handler = AnswerHandler(self.session)
         #Legacy
@@ -494,6 +496,7 @@ class Interface:
             if totalQnum > 0:
                 for q in range(1,totalQnum+1): #from 1 to toalt +1 as its q=1 when question_num =1
                     answer, qnum = handler.answer_question_V5_part1(url)
+                    # Could be made redundant? The returns can be removed
                     checkRes = subMain.checkQnum(qnum)
                     if not checkRes:
                         break
