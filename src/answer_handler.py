@@ -18,6 +18,8 @@ class InvalidURLException(BaseException):
     def __str__(self):
         return f"Invalid URL {self.__url}"
 
+class TestError(BaseException):
+    pass
 
 def catch(func):
     @functools.wraps(func)
@@ -28,9 +30,6 @@ def catch(func):
             return True, True
         except KeyboardInterrupt:
             sys.exit()  # quits script
-        except BaseException as e:
-            return None, e
-
     return stub
 
 
@@ -140,7 +139,7 @@ class AnswerHandler:
         return True, False#something
 
     # New New answer_question
-    @catch
+    # @catch
     def answer_question_V5_part1(self, url: str):
         try:
             aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
@@ -195,6 +194,7 @@ class AnswerHandler:
         r = self.sesh.get(url, headers=self.headers)
         _json = json.loads(r.text, strict=False) # cls=LazyDecoder,
         ans = _json['questions'][int(data['qnum'])-1]['answer']['correctAnswer']
+        raise TestError
         return ans
         
 
