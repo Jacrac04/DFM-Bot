@@ -4,10 +4,7 @@ import sys
 from webbrowser import open as wbopen
 import urllib.parse
 from ServerStatus.server_check import CURRENT_VERSION
-from tkinter import messagebox
-import tkinter as tk
-from tkinter import *
-from datetime import datetime
+from tkinter import Button, Label, Text, Toplevel, END, DISABLED
 # A way to create Issues on github
 # https://github.com/Jacrac04/DFM-Bot/issues/new?assignees=&labels=Bug%2FIssue&template=bug-or-issue-report.md&title=&body=Hello
 # assignees = list of people to assign to
@@ -28,19 +25,10 @@ from datetime import datetime
     # - permid: 770
     # - params: '["y", 5, 1, 50, 10, 2, 14]'
 
-def createBodyFromError(error, data):
-    body = f'''**Write anything comments here**\n\n## Generated Report \n**Please do not edit**\n\nVersion : v{CURRENT_VERSION}\n\nError: {error}\n\nQuestion Details:\n'''
-    if 'permid' in data.keys():
-        body += f'- qnum: {data["qnum"]}\n- permid: {data["permid"]}\n- params: {data["params"]}\n'
-    elif 'qid' in data.keys():
-        body += f'- qnum: {data["qnum"]}\n- quid: {data["quid"]}\n'
-    return body
-# urllib.parse.quote(createBodyFromError('TestError',))
-
-
 # Define Errors
 class NoQuestionFound(Exception):
-    pass
+    def __str__(self):
+        return 'No Question Found'
 
 class ParseError(Exception):
     pass
@@ -54,7 +42,12 @@ class InvalidURLException(BaseException):
         return f"Invalid URL {self.__url}"
 
 class TestError(BaseException):
-    pass
+    def __str__(self):
+        return 'Test Exception'
+
+# Used to raise an error in main so it the process can then be ended.
+class AnswerHandlerErrorOccurred(BaseException):
+    pass 
 
 
 # Define Wraps
@@ -68,9 +61,13 @@ def questionCatchWrap(func):
         except KeyboardInterrupt:
             sys.exit()  # quits script
         except BaseException as e:
-            # wbopen(f'https://github.com/Jacrac04/DFM-Bot/issues/new?body={urllib.parse.quote(createBodyFromError("TestError",self.currentData))}')
-            # print(str(e), self.currentData)
-            CustomMessageBox("Error", str(e), self.currentData)
+            data = self.data
+            if self.type_:
+                data['type'] = self.type_
+            else:
+                data['type'] = None
+            CustomMessageBox("Error", str(e), data)
+            raise AnswerHandlerErrorOccurred() # Raises error so the process can be ended in main.
     return stub
 
 def mainWrap(func):
@@ -85,8 +82,6 @@ def mainWrap(func):
     return stub
 
 
-
-# wbopen(f'https://github.com/Jacrac04/DFM-Bot/issues/new?{urllib.parse.quote(createBodyFromError('TestError',))}')
 
 
 # Class for custom message box
@@ -116,14 +111,14 @@ class CustomMessageBox():
     
     def createMessage(self):
         self.message_label = Label(self.window, text=f'An unexpected error occurred. ')
-        self.message_label.grid(row=0, column=0, columnspan=2, sticky=W)
+        self.message_label.grid(row=0, column=0, columnspan=2)
         self.message_label.grid(row=0, column=0, columnspan=2, padx=20, pady=5)
         
     def createDetails(self):
         self.details_text = Text(self.window, height = 5, width = 30)
         self.details_text.grid(row=4, column=0, columnspan=2, padx=20, pady=5)
-        self.details_text.insert(tk.END, f'Unexpected Error Occurred: {self.error}')
-        self.details_text.config(state=tk.DISABLED)
+        self.details_text.insert(END, f'Unexpected Error Occurred: {self.error}')
+        self.details_text.config(state=DISABLED)
         self.details_text.grid_remove()
         self.details_text.state = False
 
@@ -163,7 +158,6 @@ class CustomMessageBox():
         wbopen(iss.getURL())
         self.closeWindow()
     
-# x = CustomMessageBox("Error", "TestError", {})
 
 class GitHubManager():
     def __init__(self):#, repo):
@@ -171,12 +165,11 @@ class GitHubManager():
         self.base_url = f'https://github.com/{self.repo}'
     
     def createIssueFromError(self, error, data):
-        body = f'''**Write anything comments here**\n\n## Generated Report \n**Please do not edit**\n\nVersion : {CURRENT_VERSION}\n\nError: {error}\n\nQuestion Details:\n'''
+        body = f'''**Write anything comments here**\n\n## Generated Report \n**Please do not edit this section**\n\nVersion : {CURRENT_VERSION}\n\nError: {error}\n\nQuestion Details:\n'''
         if 'permid' in data.keys():
-            body += f'- qnum: {data["qnum"]}\n- permid: {data["permid"]}\n- params: {data["params"]}\n'
+            body += f'- qnum: {data["qnum"]}\n- permid: {data["permid"]}\n- params: {data["params"]}\n- type: {data["type"]}\n'
         elif 'qid' in data.keys():
-            body += f'- qnum: {data["qnum"]}\n- quid: {data["quid"]}\n'
-        # body += f'Time: {datetime.now()}\n\n'
+            body += f'- qnum: {data["qnum"]}\n- quid: {data["quid"]}\n- type: {data["type"]}\n'
         title = f'Error: {error}'
         label = 'Bug/Issue,DFM-Bot Generated'
         

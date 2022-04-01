@@ -13,10 +13,9 @@ from tkinter.messagebox import askyesno
 from src.errorHandling import * #as errorHandling
 from src.answer_handler import AnswerHandler
 from src.generateTask import taskGenerator
-from ServerStatus.server_check import check_status
+from ServerStatus.server_check import check_status, CURRENT_VERSION
 
 
-CURRENT_VERSION = 'v5.0.0'
 ENABLE_STATUS_CHECK = True
 
 
@@ -493,38 +492,41 @@ class Interface:
                     print(f'Unexpected exception occurred: {err}')
                     # traceback.print_exc()
         else:
-            if totalQnum > 0:
-                for q in range(1,totalQnum+1): #from 1 to toalt +1 as its q=1 when question_num =1
-                    answer, qnum = handler.answer_question_V5_part1(url)
-                    # Could be made redundant? The returns can be removed
-                    checkRes = subMain.checkQnum(qnum)
-                    if not checkRes:
-                        break
-                    if answer:
-                        pass
-                    else:
-                        print(f'Unexpected exception occurred: {err}')
-                        # traceback.print_exc()
-                        break
-                    print(f'Answer:{answer}\nNow waiting for delay')
+            try:
+                if totalQnum > 0:
+                    for q in range(1,totalQnum+1): #from 1 to toalt +1 as its q=1 when question_num =1
+                        answer, qnum = handler.answer_question_V5_part1(url)
+                        # Could be made redundant? The returns can be removed
+                        checkRes = subMain.checkQnum(qnum)
+                        if not checkRes:
+                            break
+                        if answer:
+                            pass
+                        else:
+                            print(f'Unexpected exception occurred: {err}')
+                            # traceback.print_exc()
+                            break
+                        print(f'Question {qnum}: {answer}\nNow waiting for delay')
 
-                    root.update()
-                    delay = int(uniform(minDelay, maxDelay))
-                    for time in range(0,delay*100,1):
-                        root.after(10, root.update())
-                    print('Answered\n')
-                    res, err = handler.answer_question_V5_part2()
-                    
-                print('Done')
+                        root.update()
+                        delay = int(uniform(minDelay, maxDelay))
+                        for time in range(0,delay*100,1):
+                            root.after(10, root.update())
+                        print('Answered\n')
+                        res, err = handler.answer_question_V5_part2()
+                        
+                    print('Done\n')
 
-            else:
-                answer, qnum = handler.answer_question_V5_part1(url)
-                #print(f'Question {qnum}: {answer}')
-                if answer:
-                    print(f'Question {qnum}: {answer}')
                 else:
-                    print(f'Unexpected exception occurred: {qnum}')
-                    traceback.print_exc()
+                    answer, qnum = handler.answer_question_V5_part1(url)
+                    #print(f'Question {qnum}: {answer}')
+                    if answer:
+                        print(f'Question {qnum}: {answer}')
+                    else:
+                        print(f'Unexpected exception occurred: {qnum}')
+                        traceback.print_exc()
+            except AnswerHandlerErrorOccurred:
+                print('Terminated due to unexpected error')
 
     def test_login(self, email, password):
         login_url = 'https://www.drfrostmaths.com/process-login.php?url='

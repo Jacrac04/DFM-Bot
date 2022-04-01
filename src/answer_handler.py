@@ -141,23 +141,21 @@ class AnswerHandler:
     # @catch
     @questionCatchWrap
     def answer_question_V5_part1(self, url: str):
-        self.currentData = None
+        self.data = None
         try:
             aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
         except IndexError:
             raise InvalidURLException(url)
         page = self.sesh.get(url, headers=self.headers).text
-        ansMethordType, data, type_ = Parser.parse_V2(page)
-        self.currentData = data 
-        answer = self.find_answer_V2(data, type_, aaid)
+        ansMethordType, self.data, self.type_ = Parser.parse_V2(page)
+        answer = self.find_answer_V2(self.data, self.type_, aaid)
 
-        data['aaid'] = aaid
+        self.data['aaid'] = aaid
 
         self.current_answer = answer
-        self.current_answer_data = data
-        self.type_ = type_
-
-        return answer, data['qnum']
+        self.current_answer_data = self.data
+        # self.type_ = type_
+        return answer, self.data['qnum']
     @questionCatchWrap
     def answer_question_V5_part2(self):
         return self.answer_question_V4_part2()
