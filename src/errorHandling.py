@@ -1,3 +1,4 @@
+from cProfile import label
 import functools
 import sys
 from webbrowser import open as wbopen
@@ -67,8 +68,9 @@ def questionCatchWrap(func):
         except KeyboardInterrupt:
             sys.exit()  # quits script
         except BaseException as e:
-            wbopen(f'https://github.com/Jacrac04/DFM-Bot/issues/new?body={urllib.parse.quote(createBodyFromError("TestError",self.currentData))}')
-            print(str(e), self.currentData)
+            # wbopen(f'https://github.com/Jacrac04/DFM-Bot/issues/new?body={urllib.parse.quote(createBodyFromError("TestError",self.currentData))}')
+            # print(str(e), self.currentData)
+            CustomMessageBox("Error", str(e), self.currentData)
     return stub
 
 def mainWrap(func):
@@ -155,5 +157,40 @@ class CustomMessageBox():
     def closeWindow(self):
         self.window.destroy()
     
-x = CustomMessageBox("Error", "TestError", {})
+    def reportIssue(self):
+        ghm = GitHubManager()
+        iss = ghm.createIssueFromError(self.error, self.data)
+        wbopen(iss.getURL())
+        self.closeWindow()
+    
+# x = CustomMessageBox("Error", "TestError", {})
 
+class GitHubManager():
+    def __init__(self):#, repo):
+        self.repo = 'Jacrac04/DFM-Bot'#= repo
+        self.base_url = f'https://github.com/{self.repo}'
+    
+    def createIssueFromError(self, error, data):
+        body = f'''**Write anything comments here**\n\n## Generated Report \n**Please do not edit**\n\nVersion : {CURRENT_VERSION}\n\nError: {error}\n\nQuestion Details:\n'''
+        if 'permid' in data.keys():
+            body += f'- qnum: {data["qnum"]}\n- permid: {data["permid"]}\n- params: {data["params"]}\n'
+        elif 'qid' in data.keys():
+            body += f'- qnum: {data["qnum"]}\n- quid: {data["quid"]}\n'
+        # body += f'Time: {datetime.now()}\n\n'
+        title = f'Error: {error}'
+        label = 'Bug/Issue,DFM-Bot Generated'
+        
+        return GitHubIssue(title, body, self.base_url, self.repo, label)
+                
+        
+class GitHubIssue():
+    def __init__(self, title, body, baseurl, repo, label):
+        self.title = title
+        self.body = body
+        self.base_url = baseurl
+        self.repository = repo
+        self.label = label
+    
+    def getURL(self):
+        self._url = f'{self.base_url}/issues/new?&title={urllib.parse.quote(self.title)}&body={urllib.parse.quote(self.body)}&labels={urllib.parse.quote(self.label)}'
+        return self._url
