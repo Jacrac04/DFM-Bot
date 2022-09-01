@@ -17,7 +17,8 @@
   </p>
 </p>
 
-# Working Again!
+# DFM V5 is almost here 
+It is likely this bot will not work when DFM V5 is released on Sunday 4th September
 
 <details open="open">
   <summary><h2 style="display: inline-block">Table of Contents</h2></summary>
