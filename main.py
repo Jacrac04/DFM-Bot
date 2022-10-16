@@ -510,12 +510,12 @@ class Interface:
                     for time in range(0,delay*100,1):
                         root.after(10, root.update())
                     print('Answered\n')
-                    res, err = handler.answer_question_V5_part2()
+                    res, err = handler.answer_question_V5_1_part2()
                     
                 print('Done')
 
             else:
-                answer, qnum = handler.answer_question_V5_part1(url)
+                answer, qnum = handler.answer_question_V5_1_part1(url)
                 #print(f'Question {qnum}: {answer}')
                 if answer:
                     print(f'Question {qnum}: {answer}')

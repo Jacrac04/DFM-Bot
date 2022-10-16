@@ -2,12 +2,13 @@ import functools
 import json
 import sys
 from statistics import mean
-from src.lazyDecoder_utils import LazyDecoder
 
 try:
-    from src.parser_utils import Parser, NoQuestionFound, AAID_REGEX, FIND_DIGIT_REGEX
+    from src.parser_utils import (AAID_REGEX, FIND_DIGIT_REGEX,
+                                  NoQuestionFound, Parser)
 except:
-    from src.parser_utils import Parser, NoQuestionFound, AAID_REGEX, FIND_DIGIT_REGEX
+    from src.parser_utils import (AAID_REGEX, FIND_DIGIT_REGEX,
+                                  NoQuestionFound, Parser)
 
 
 class InvalidURLException(BaseException):
@@ -41,6 +42,7 @@ class AnswerHandler:
                                       ' Chrome/87.0.4280.141 Safari/537.36'}
         self.process_ans_url = 'https://www.drfrostmaths.com/process-answer-new.php'
         self.get_assess_url = 'https://www.drfrostmaths.com/homework/util-getassessmentattempt2.php'
+        self.get_question_url = 'https://www.drfrostmaths.com/controller/controller_gettaskquestion.php'
         self.process_skip_url = 'https://www.drfrostmaths.com/process-skipquestion2.php'
         self.answer_functions = {
                                  'numeric': self.answer_numeric,
@@ -146,7 +148,8 @@ class AnswerHandler:
             aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
         except IndexError:
             raise InvalidURLException(url)
-        page = self.sesh.get(url, headers=self.headers).text
+        
+        page = self.sesh.post(url, headers=self.headers).text
         ansMethordType, data, type_ = Parser.parse_V2(page)
     
         answer = self.find_answer_V2(data, type_, aaid)
@@ -158,6 +161,27 @@ class AnswerHandler:
         self.type_ = type_
 
         return answer, data['qnum']
+    
+    def answer_question_V5_1_part1(self, url: str):
+        try:
+            aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
+        except IndexError:
+            raise InvalidURLException(url)
+
+        questions = self.sesh.post(self.get_question_url, data={'aaid': aaid}, headers=self.headers)
+        answerMethodType, data, type_ = Parser.parse_V3(questions.content)
+        
+        answer = self.find_answer_V2(data, type_, aaid)
+
+        data['aaid'] = aaid
+
+        self.current_answer = answer
+        self.current_answer_data = data
+        self.type_ = type_
+
+        return answer, data['qnum']
+        
+        
 
     def answer_question_V5_part2(self):
         return self.answer_question_V4_part2()

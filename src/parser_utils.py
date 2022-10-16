@@ -1,5 +1,6 @@
 import re
 from json import JSONDecoder
+import json
 
 from bs4 import BeautifulSoup
 
@@ -44,7 +45,28 @@ class Parser:
                 return ansMethordType, {'userAnswer': '', 'qnum': qnum, 'permid': permid, 'params': params}, type_
         except (KeyError, IndexError) as e:
             raise NoQuestionFound(e)
-        
+    
+    @staticmethod
+    def parse_V3(questionsRaw: str):
+        try:
+            data = json.loads(questionsRaw)
+            qnum = data['qnum']
+            question = data['question']
+            
+            try:
+                qid = question['qid']
+                type_ = question['answer']['type']  
+                ansMethordType = 1
+                return ansMethordType, {'qid': qid, 'qnum': qnum}, type_
+            except:
+                params = str(question['params'])
+                params = params.replace('\'', '"').replace('None', 'null').replace('True', 'true').replace('False', 'false')
+                permid = question['permid']
+                type_ = question['answer']['type']
+                ansMethordType = 2
+                return ansMethordType, {'userAnswer': '', 'qnum': qnum, 'permid': permid, 'params': params}, type_
+        except (KeyError, IndexError) as e:
+            raise NoQuestionFound(e)
 
     @staticmethod
     def find_tags(page: str):
