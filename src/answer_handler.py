@@ -3,11 +3,14 @@ import json
 import sys
 from statistics import mean
 from src.lazyDecoder_utils import LazyDecoder
+from src.questions import Questions
 
 try:
     from src.parser_utils import Parser, NoQuestionFound, AAID_REGEX, FIND_DIGIT_REGEX
 except:
     from src.parser_utils import Parser, NoQuestionFound, AAID_REGEX, FIND_DIGIT_REGEX
+
+DFM_SUBMIT_ANSWER_URL = "https://www.drfrostmaths.com/api/tasks/submitanswer"
 
 
 class InvalidURLException(BaseException):
@@ -143,14 +146,13 @@ class AnswerHandler:
     @catch
     def answer_question_V5_part1(self, url: str):
         try:
-            aaid = FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0]
+            aaid = int(FIND_DIGIT_REGEX.findall(AAID_REGEX.findall(url)[0])[0])
         except IndexError:
             raise InvalidURLException(url)
-        page = self.sesh.get(url, headers=self.headers).text
-        ansMethordType, data, type_ = Parser.parse_V2(page)
-    
-        answer = self.find_answer_V2(data, type_, aaid)
 
+        qnum, qid, type_ = Questions(aaid, self.sesh).get_next_question()
+        data = {'qid': qid, 'qnum': qnum}
+        answer = self.find_answer_V2(data, type_, aaid)
         data['aaid'] = aaid
 
         self.current_answer = answer
@@ -190,18 +192,17 @@ class AnswerHandler:
     
     # New find_answer
     def find_answer_V2(self, data: dict, type_: str, aaid):
-        url = self.get_assess_url + '?aaid=' + aaid
+        url = self.get_assess_url + '?aaid=' + str(aaid)
         print(url)
         r = self.sesh.get(url, headers=self.headers)
         _json = json.loads(r.text, strict=False) # cls=LazyDecoder,
         ans = _json['questions'][int(data['qnum'])-1]['answer']['correctAnswer']
         return ans
-        
 
     def submit(self, data: dict):
         try:
-            r = self.sesh.post(self.process_ans_url, headers=self.headers, data=data, timeout=3)
-        except BaseException:
+            self.sesh.post(DFM_SUBMIT_ANSWER_URL, json=data, timeout=3).json()
+        except json.JSONDecodeError:
             return False
         
             

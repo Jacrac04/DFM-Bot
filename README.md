@@ -4,7 +4,7 @@
     <img src="images/logo.jpg" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Dr Forst Maths Bot</h3>
+  <h3 align="center">Dr Frost Maths Bot</h3>
 
   <p align="center">
     A Bot for drfrostmaths.com
@@ -17,8 +17,8 @@
   </p>
 </p>
 
-# DFM V5 is almost here 
-It is likely this bot will not work when DFM V5 is released on Sunday 4th September
+# DFM V5 
+Thanks to [Asad](https://github.com/Asad-K) for creating a fix for "QID" questions. The bot still doesn't work for "param" questions but a fix will likely be coming soon. For now, I recommend only using manual submit. 
 
 <details open="open">
   <summary><h2 style="display: inline-block">Table of Contents</h2></summary>
