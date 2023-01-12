@@ -79,6 +79,12 @@ class UserInterface(Tk):
                 if msg != 'None':
                     tkm.showinfo("Information", msg)
                 # return False, (False, False)
+                
+            elif status == 'Warning':
+                if msg != 'None':
+                    tkm.showerror("Warning", msg)
+                else:
+                    tkm.showerror("Unknown Warning", "It is not recommended to use this until this is resolved.")
             elif status == 'Error':
                 if msg != 'None':
                     tkm.showerror("Error", msg)
