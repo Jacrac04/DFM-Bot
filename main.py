@@ -18,6 +18,12 @@ from ServerStatus.server_check import check_status
 CURRENT_VERSION = 'v5.0.0'
 ENABLE_STATUS_CHECK = True
 
+DFM_LOGIN_URL = "https://www.drfrostmaths.com/api/auth/login/"
+DFM_TIMES_TABLES_URL = "https://www.drfrostmaths.com/homework/process-starttimestables.php"
+
+HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                         'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36',
+           "content-type": "application/json"}
 
 class IORedirector(object):
     #A general class for redirecting I/O to this Text widget.
@@ -474,6 +480,7 @@ class Login():
 class Interface:
     def __init__(self):
         self.session = Session()
+        self.session.headers = HEADERS
 
 
     #This desperately needs rewriting.
@@ -524,23 +531,15 @@ class Interface:
                     traceback.print_exc()
 
     def test_login(self, email, password):
-        login_url = 'https://www.drfrostmaths.com/process-login.php?url='
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
-                                 ' Chrome/87.0.4280.141 Safari/537.36'}
-        data = {'login-email': email, 'login-password': password}
-
-        self.session.post(login_url, headers=headers, data=data)
+        self.session.post(DFM_LOGIN_URL, json={'email': email, 'password': password})
         try:
             """
             verifying user is authenticated by tests if user can load the times tables
             """
-            res = self.session.get('https://www.drfrostmaths.com/homework/process-starttimestables.php')
-            json.loads(res.text)
-            
-            
-        except BaseException:
+            self.session.get(DFM_TIMES_TABLES_URL).json()
+        except json.JSONDecodeError:
             raise InvalidLoginDetails(f'Email: {email}, Password: {"*" * len(password)}')
-    
+
     def generate_task(self, modeNum, interleave, tidNum, amountSkills, amountQuestions, root=None):
         generator = taskGenerator(self.session)
         res, err = generator.makeTask_V1(modeNum, interleave, tidNum, amountSkills, amountQuestions)
